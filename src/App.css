@@ -1,0 +1,731 @@
+/* ================= GLOBAL RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html, #root {
+  width: 100%;
+  max-width: 100%;
+  background-color: #f7f6f4;
+  overflow-x: hidden; /* Yeh neeche ke horizontal scroll ko rokega */
+}
+/* ================= HEADER STYLES ================= */
+.anyk-header {
+  width: 100%;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+/* 1. Notification Bar */
+.anyk-notification {
+  background-color: #8b2525;
+  color: #ffffff;
+  font-size: 13px;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  letter-spacing: 0.05em;
+}
+
+/* 2. Main Premium Header */
+.premium-header-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Left: Logo */
+.anyk-logo-area {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Image logo ki nayi styling */
+.premium-image-logo {
+  height: 65px; /* Aap ise apne hisaab se 50px ya 80px kar sakte hain */
+  width: auto;
+  object-fit: contain;
+}
+
+/* Center: Navigation Menu */
+.premium-nav-list {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.premium-nav-item {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  /* Yeh 2 lines text ko wrap hone se rokengi */
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  
+  color: #222222;
+  cursor: pointer;
+  position: relative;
+  padding-bottom: 6px;
+  transition: color 0.3s ease;
+}
+
+.premium-nav-item:hover {
+  color: #8b2525;
+}
+
+/* Animated Underline Effect for Menu */
+.premium-nav-item::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #8b2525;
+  transition: width 0.3s ease;
+}
+
+.premium-nav-item:hover::after {
+  width: 100%;
+}
+
+/* Right: Search & Icons */
+.premium-right-section {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.premium-search {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.premium-search:focus-within {
+  border-bottom-color: #8b2525;
+}
+
+.premium-search input {
+  border: none;
+  outline: none;
+  width: 160px;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+  transition: width 0.4s ease;
+}
+
+.premium-search input:focus {
+  width: 220px;
+}
+
+.premium-search input::placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+.premium-search-icon {
+  color: #666;
+  cursor: pointer;
+}
+
+.premium-icons {
+  display: flex;
+  gap: 20px;
+  color: #333;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  transition: transform 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.icon-btn:hover {
+  transform: scale(1.1);
+  color: #8b2525;
+}
+
+/* ================= CAROUSEL STYLES ================= */
+.anyk-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  background-color: #e5e5e5;
+  overflow: hidden;
+}
+
+.anyk-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.anyk-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-size: cover;
+  background-position: center top;
+}
+
+.anyk-slide-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 100%;
+  background-color: #362215;
+  clip-path: polygon(0 0, 100% 0, 75% 100%, 0 100%);
+  display: flex;
+  align-items: center;
+  padding-left: 10%;
+  z-index: 2;
+}
+
+.anyk-slide-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40%;
+  height: 100%;
+  background-color: #362215;
+  clip-path: polygon(25% 0, 100% 0, 100% 100%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.anyk-slide-title-left {
+  color: #e2ddc7;
+  font-family: Georgia, serif;
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: normal;
+  white-space: pre-line;
+}
+
+.anyk-slide-title-right {
+  color: #e2ddc7;
+  font-family: Arial, sans-serif;
+  font-size: 32px;
+  font-weight: normal;
+  text-align: center;
+  margin-bottom: 24px;
+  white-space: pre-line;
+  letter-spacing: 1px;
+}
+
+.anyk-slide-button {
+  background-color: #d1d4c2;
+  color: #1a1a1a;
+  border: none;
+  padding: 14px 36px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 3;
+}
+
+.anyk-slide-button:hover {
+  background-color: #babcab;
+}
+
+.anyk-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.85);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  color: #333;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  transition: background-color 0.2s;
+}
+
+.anyk-carousel-arrow:hover {
+  background-color: #ffffff;
+}
+
+.anyk-carousel-arrow.prev { left: 24px; }
+.anyk-carousel-arrow.next { right: 24px; }
+
+/* ================= GRID & MISC STYLES ================= */
+.mens-section {
+  max-width: 1600px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.mens-header-title {
+  font-family: Georgia, serif;
+  font-size: 32px;
+  font-style: italic;
+  color:black;
+  margin-bottom: 20px;
+  font-weight: normal;
+}
+
+.mens-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+
+.mens-card {
+  position: relative;
+  height: 400px; 
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.mens-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.mens-card:hover img {
+  transform: scale(1.05);
+}
+
+.mens-card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.mens-card-title {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  color: #ffffff;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 22px;
+  z-index: 2;
+  margin: 0;
+  font-weight: normal;
+}
+
+/* ================= ABOUT / WELCOME SECTION ================= */
+.anyk-about-section {
+  background-color: #f7f6f4; /* Yeh Vanilla/Beige color hai jo footer ka hai */
+  width: 100%; /* Width Footer ke barabar */
+  padding: 60px 20px; 
+  text-align: center;
+  box-sizing: border-box; /* Padding ki wajah se width bahar na jaye */
+}
+
+.anyk-about-section h2 {
+  color: #000000;
+  font-family: Georgia, serif;
+  font-size: 28px;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.anyk-about-section p {
+  color: #333333;
+  max-width: 1000px; /* Text ko center me rakhne ke liye */
+  margin: 0 auto;
+  line-height: 1.6;
+  font-size: 16px;
+}
+/* ================= FOOTER STYLES ================= */
+.anyk-footer {
+  background-color: #f7f6f4;
+  padding: 60px 20px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  box-sizing: border-box; /* YAHAN FIX KIYA HAI */
+}
+
+.anyk-follow-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.anyk-follow-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+.anyk-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-bottom: 50px;
+  color: #000000;
+}
+
+.anyk-social-icon {
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.anyk-social-icon:hover {
+  opacity: 0.7;
+  transform: scale(1.1);
+}
+
+.anyk-copyright {
+  color: #6a727f;
+  font-size: 15px;
+  margin: 0;
+  text-align: center;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .premium-nav-list { display: none; /* Hide center menu on small screens */ }
+  .premium-header-container { padding: 20px; }
+  .anyk-slide-title-left { font-size: 40px; padding-left: 5%; }
+  .anyk-slide-title-right { font-size: 24px; }
+}
+
+@media (max-width: 768px) {
+  .premium-search { display: none; }
+  .anyk-carousel-container { height: 350px; }
+  .anyk-slide-left { width: 65%; clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); }
+  .anyk-slide-right { width: 50%; clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%); }
+  .anyk-slide-title-left { font-size: 32px; }
+  .anyk-slide-title-right { font-size: 18px; }
+  .anyk-carousel-arrow { width: 36px; height: 36px; }
+  .anyk-slide-button { padding: 10px 24px; font-size: 11px; }
+}
+
+/* ================= PRODUCT LISTING PAGE (PLP) ================= */
+.plp-container { max-width: 1600px; margin: 0 auto; padding: 40px 20px; font-family: Arial, sans-serif; }
+.plp-title { font-family: Georgia, serif; font-size: 28px; font-weight: normal; margin-bottom: 20px; }
+.plp-layout { display: flex; gap: 40px; border-top: 1px solid #eaeaec; padding-top: 20px; }
+
+/* Sidebar Filter Styles */
+.plp-sidebar { width: 260px; flex-shrink: 0; border-right: 1px solid #eaeaec; padding-right: 20px; }
+
+.plp-filter-section {
+  padding: 20px 0;
+  border-bottom: 1px solid #eaeaec;
+}
+
+.plp-filter-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #282c3f;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-icon-btn {
+  background-color: #f4f4f5;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Custom Range Slider (Pink style) */
+.range-slider-container { width: 100%; margin-top: 10px; }
+.plp-range-slider {
+  width: 100%;
+  accent-color: maroon; /* Myntra Pink Color */
+  cursor: pointer;
+}
+
+.plp-price-text {
+  font-size: 14px;
+  color: #282c3f;
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+/* Checkboxes and Radios */
+.filter-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #282c3f;
+  cursor: pointer;
+}
+
+.filter-label input {
+  margin-right: 12px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #ff3f6c;
+}
+
+/* Color Dots */
+.color-circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.color-count {
+  color: #94969f;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.plp-more-text {
+  color: #ff3f6c;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* Right Grid Styles */
+.plp-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; align-content: start; }
+.product-card { cursor: pointer; transition: transform 0.3s ease; position: relative; }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+.product-card img { width: 100%; height: 320px; object-fit: cover; }
+.product-info { padding: 12px 10px; text-align: left; background: #fff;}
+.product-info h4 { font-size: 14px; margin: 0 0 5px 0; color: #535665; font-weight: 400; }
+.price { color: #282c3f; font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+.add-to-cart-btn { background-color: #ffffff; color: #282c3f; border: 1px solid #d4d5d9; padding: 10px 20px; width: 100%; font-size: 14px; cursor: pointer; font-weight: 700; transition: all 0.2s; }
+.product-card:hover .add-to-cart-btn { background-color: maroon; color: #fff; border-color: #ff3f6c; }
+
+@media (max-width: 768px) {
+  .plp-layout { flex-direction: column; border-top: none; padding-top: 0; }
+  .plp-sidebar { width: 100%; border-right: none; border-bottom: 1px solid #eaeaec; padding-bottom: 20px; margin-bottom: 20px; }
+}
+
+/* ================= SIDEBAR MAIN HEADER (FILTERS) ================= */
+.plp-sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eaeaec;
+}
+
+.plp-sidebar-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #282c3f; /* Bold aur clear dark color */
+  margin: 0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.clear-all-btn {
+  color: #ff3f6c; /* Myntra Pink color */
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.clear-all-btn:hover {
+  text-decoration: underline;
+}
+
+/* ================= CART BADGE STYLES ================= */
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background-color: maroon; /* Myntra Pink */
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #fff;
+}
+
+/* ================= PRODUCT OPTIONS (SIZE & QTY) ================= */
+.product-options {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.option-select {
+  flex: 1;
+  padding: 8px 6px;
+  border: 1px solid #d4d5d9;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #282c3f;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+  font-family: inherit;
+  font-weight: 500;
+  transition: border-color 0.2s;
+}
+
+.option-select:focus {
+  border-color: #ff3f6c;
+}
+
+.option-select option {
+  color: #282c3f;
+}
+
+/* ================= LOGIN & SIGNUP PAGE ================= */
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  background-color: #f7f6f4; /* Vanilla background */
+  padding: 40px 20px;
+}
+
+.auth-box {
+  background-color: #ffffff;
+  padding: 50px 40px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.auth-title {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  color: #111111;
+  margin-bottom: 10px;
+  font-weight: normal;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.auth-form {
+  text-align: left;
+}
+
+.auth-input-group {
+  margin-bottom: 20px;
+}
+
+.auth-input-group label {
+  display: block;
+  font-size: 13px;
+  color: #333333;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.auth-input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #dddddd;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.auth-input-group input:focus {
+  border-color: #8b2525;
+}
+
+.auth-forgot-password {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #555555;
+  cursor: pointer;
+  margin-top: -10px;
+  margin-bottom: 25px;
+  text-decoration: underline;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  background-color: #111111;
+  color: #ffffff;
+  padding: 14px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+.auth-submit-btn:hover {
+  background-color: #8b2525;
+}
+
+.auth-toggle-section {
+  margin-top: 25px;
+  font-size: 14px;
+  color: #555555;
+}
+
+.auth-toggle-link {
+  color: #8b2525;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
+}
