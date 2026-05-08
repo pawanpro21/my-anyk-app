@@ -7,6 +7,8 @@ import MensCollection from './MensCollection';
 import ComingSoon from './ComingSoon';
 import Login from './Login';
 import './App.css';
+import ProductDetails from './ProductDetails';
+import Cart from './Cart';
 
 function Home() {
   return (
@@ -47,6 +49,11 @@ export default function App() {
             
             <Route path="/coming-soon" element={<ComingSoon />} />
             <Route path="/login" element={<Login />} />
+            
+            <Route path="/product/:id" element={<ProductDetails addToCart={handleAddToCart} />} />
+            
+            {/* YAHAN FIX KIYA GAYA HAI: Cart route ko properly format kiya hai */}
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </div>
 

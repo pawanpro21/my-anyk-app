@@ -7,7 +7,7 @@ export default function Login() {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h2 className="auth-title">{isLogin ? 'Welcome Back' : 'Create an Account'}</h2>
+        <h2 className="auth-title">{isLogin ? 'Welcome to Anyk Family' : 'Create an Account'}</h2>
         <p className="auth-subtitle">
           {isLogin 
             ? 'Login to access your Anyk Originals account.' 
@@ -20,13 +20,13 @@ export default function Login() {
           {!isLogin && (
             <div className="auth-input-group">
               <label>Full Name</label>
-              <input type="text" placeholder="Aditya" required />
+              <input type="text" placeholder="Pawan Srivastav" required />
             </div>
           )}
 
           <div className="auth-input-group">
             <label>Mobile Number / Email</label>
-            <input type="text" placeholder="+91 9876543210 or email@domain.com" required />
+            <input type="text" placeholder="+917011493689 or pksri21@gmail.com" required />
           </div>
 
           <div className="auth-input-group">

@@ -466,7 +466,7 @@ body, html, #root {
 }
 
 .search-icon-btn {
-  background-color: #f4f4f5;
+  background-color: goldenrod;
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -506,7 +506,7 @@ body, html, #root {
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #ff3f6c;
+  accent-color: maroon;
 }
 
 /* Color Dots */
@@ -525,7 +525,7 @@ body, html, #root {
 }
 
 .plp-more-text {
-  color: #ff3f6c;
+  color: maroon;
   font-size: 14px;
   margin-top: 10px;
   cursor: pointer;
@@ -567,7 +567,7 @@ body, html, #root {
 }
 
 .clear-all-btn {
-  color: #ff3f6c; /* Myntra Pink color */
+  color: maroon; /* Myntra Pink color */
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -615,7 +615,7 @@ body, html, #root {
 }
 
 .option-select:focus {
-  border-color: #ff3f6c;
+  border-color: maroon;
 }
 
 .option-select option {
@@ -637,7 +637,7 @@ body, html, #root {
   padding: 50px 40px;
   width: 100%;
   max-width: 450px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px #f7f6f4 (0, 0, 0, 0.05);
   text-align: center;
 }
 
@@ -667,7 +667,7 @@ body, html, #root {
 .auth-input-group label {
   display: block;
   font-size: 13px;
-  color: #333333;
+  color: black;
   font-weight: 600;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -728,4 +728,656 @@ body, html, #root {
   font-weight: bold;
   cursor: pointer;
   text-decoration: underline;
+}
+
+/* ================= HERO CAROUSEL DOTS (FABINDIA STYLE) ================= */
+.carousel-dots {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-dots .dot {
+  width: 8px;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.5); /* Halka white background */
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Jo dot active hoga wo thoda lamba (pill shape) aur dark ho jayega */
+.carousel-dots .dot.active {
+  background-color: #ffffff;
+  width: 24px; 
+  border-radius: 10px;
+}
+
+/* ================= 3D BOX MENU STYLING ================= */
+.nav-box-item {
+  background-color: #f7f6f4; /* Subtle premium light background */
+  color: #282c3f; /* Dark text */
+  padding: 10px 24px;
+  border-radius: 8px; /* Smooth corners */
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06); /* Base shadow */
+  border: 1px solid #eaeaec;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smooth bouncy transition */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 3D Hover Effect - Cursor le jane par */
+.nav-box-item:hover {
+  transform: translateY(-6px) scale(1.08); /* Box upar uthega aur bada hoga */
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15); /* Shadow deeply fail jayegi */
+  background-color: #282c3f; /* Background dark ho jayega */
+  color: #ffffff; /* Text white ho jayega */
+  border-color: #282c3f;
+}
+
+/* ================= PRODUCT DETAILS PAGE (PDP) ================= */
+.pdp-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 20px 60px 20px;
+}
+
+.pdp-breadcrumb {
+  font-size: 14px;
+  color: #535766;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #282c3f;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pdp-layout {
+  display: flex;
+  gap: 40px;
+}
+
+.pdp-image-section {
+  flex: 1;
+}
+
+.pdp-main-image {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+}
+.pdp-main-image:hover {
+  transform: scale(1.02);
+}
+
+.pdp-info-section {
+  flex: 1.2;
+  padding-right: 20px;
+}
+
+.pdp-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: #282c3f;
+  margin: 0 0 5px 0;
+  letter-spacing: 1px;
+}
+
+.pdp-title {
+  font-size: 20px;
+  color: #535766;
+  font-weight: 400;
+  margin: 0 0 15px 0;
+}
+
+.pdp-rating-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid #eaeaec;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #282c3f;
+  cursor: pointer;
+}
+
+.pdp-rating-box:hover {
+  border-color: #282c3f;
+}
+
+.rating-divider {
+  color: #eaeaec;
+  margin: 0 5px;
+}
+
+.pdp-divider {
+  height: 1px;
+  background-color: #eaeaec;
+  margin: 20px 0;
+}
+
+.pdp-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.pdp-final-price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #282c3f;
+}
+
+.pdp-mrp {
+  font-size: 20px;
+  color: #7e818c;
+}
+
+.pdp-discount {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff905a;
+}
+
+.tax-text {
+  color: #03a685;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.pdp-sizes {
+  display: flex;
+  gap: 15px;
+}
+
+.pdp-size-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid #bfc0c6;
+  background: white;
+  font-size: 14px;
+  font-weight: bold;
+  color: #282c3f;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdp-size-btn:hover {
+  border-color: #ff3f6c;
+}
+
+.pdp-size-btn.selected {
+  border: 1px solid #ff3f6c;
+  color: #ff3f6c;
+  background-color: #fff0f3;
+}
+
+.pdp-action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.pdp-add-bag-btn {
+  flex: 2;
+  background-color: #ff3f6c;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+.pdp-add-bag-btn:hover {
+  background-color: #ff527b;
+}
+
+.pdp-wishlist-btn {
+  flex: 1;
+  background-color: white;
+  color: #282c3f;
+  border: 1px solid #d4d5d9;
+  padding: 15px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.pdp-wishlist-btn:hover {
+  border-color: #282c3f;
+}
+
+.pincode-box {
+  display: flex;
+  border: 1px solid #d4d5d9;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 300px;
+}
+
+.pincode-box input {
+  border: none;
+  padding: 12px;
+  flex: 1;
+  outline: none;
+  font-size: 14px;
+}
+
+.pincode-box button {
+  background: none;
+  border: none;
+  color: #ff3f6c;
+  font-weight: bold;
+  padding: 0 15px;
+  cursor: pointer;
+}
+
+.delivery-msg {
+  color: #2ecc71;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.delivery-hint {
+  font-size: 12px;
+  color: #7e818c;
+  margin-top: 5px;
+}
+
+.delivery-features {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.delivery-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  color: #282c3f;
+  margin-bottom: 12px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .pdp-layout {
+    flex-direction: column;
+  }
+  .pdp-action-buttons {
+    flex-direction: column;
+  }
+}
+
+/* =========================================================
+   📱 MOBILE RESPONSIVENESS - STRICT FIX
+========================================================= */
+
+@media screen and (max-width: 768px) {
+  
+  /* ================= 1. HEADER & SEARCH FIX ================= */
+  .premium-header-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 15px 20px !important;
+    gap: 15px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* ================= MENU IN SINGLE LINE FIX ================= */
+  .premium-nav-list {
+    display: flex !important;
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important; /* Kisi bhi box ko niche nahi girne dega */
+    justify-content: space-between !important; 
+    gap: 5px !important; /* Gap chota kiya taaki fit ho sakein */
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: auto !important; 
+  }
+  
+  /* Link tag (<a/>) ko barabar jagah dene ke liye */
+  .premium-nav-list a {
+    flex: 1 !important; /* Teeno boxes ko exactly 33.3% screen width dega */
+    text-decoration: none !important;
+  }
+
+  /* Box ke andar ka text aur spacing adjust */
+  .nav-box-item {
+    white-space: nowrap !important; /* "MEN'S Wear" ko 2 line me nahi tootne dega */
+    font-size: 11px !important; /* Mobile ke liye font chota kiya */
+    padding: 10px 5px !important; /* Andar ki space adjust ki */
+    margin: 0 !important;
+    text-align: center !important; /* Text ekdum center me rahega */
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  .premium-right-section {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 20px !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Search Bar ko screen ke andar rakhne ka strict rule */
+  .premium-search {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+  }
+  
+  .premium-search input {
+    width: 100% !important;
+    padding: 12px 45px 12px 15px !important; /* Icon ke liye right mein jagah */
+    box-sizing: border-box !important;
+  }
+  
+  .premium-search-icon {
+    position: absolute !important;
+    right: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+
+  .premium-icons {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 40px !important; /* Icons ke beech badhiya space */
+  }
+
+  /* ================= 2. BANNER STRICT FIX ================= */
+  /* Banner ab phone ki chaurai (width) ke hisaab se height lega */
+  /* ================= 2. BANNER STRICT FIX (AB KATEGA NAHI) ================= */
+  .anyk-carousel-container {
+    width: 100% !important;
+    height: 50vw !important; /* Mobile ki chaurai ke hisaab se height */
+    min-height: 180px !important;
+    background-color: #f7f6f4 !important; /* Agar image choti pade toh peeche grey color dikhe */
+  }
+  
+  .anyk-carousel-track {
+    height: 100% !important;
+  }
+
+  .anyk-slide {
+    height: 100% !important;
+    width: 100vw !important;
+    /* YAHAN 'cover' KO HATAKAR 'contain' KIYA HAI TAAKI IMAGE KATE NAHI */
+    background-size: contain !important; 
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
+
+  /* ================= 3. HOMEPAGE SINGLE IMAGE FIX ================= */
+  .mens-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important; /* Strict 1 image per row */
+    gap: 20px !important;
+    padding: 0 15px !important;
+  }
+
+  /* ================= 4. MENS COLLECTION (PLP) ================= */
+  .plp-layout {
+    flex-direction: column !important;
+  }
+  
+  .plp-sidebar {
+    width: 100% !important;
+    border-right: none !important;
+    border-bottom: 2px solid #eaeaec !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  
+  .plp-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* ================= 5. PRODUCT DETAILS & CART ================= */
+  .pdp-layout {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  
+  .pdp-action-buttons {
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+
+  .cart-item-flex {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+  
+  .cart-item-image {
+    width: 100% !important;
+    max-width: 150px !important;
+    margin: 0 auto 15px auto !important;
+  }
+}
+
+/* ================= FILTER DRAWER LOGIC ================= */
+
+.plp-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.filter-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: maroon;
+  border: 1px solid #d4d5d9;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-toggle-btn:hover {
+  border-color: #282c3f;
+  background-color: #f7f6f4;
+}
+
+/* Sidebar Drawer Style */
+.plp-sidebar {
+  position: fixed;
+  top: 0;
+  left: -100%; /* Shuruwat mein screen ke bahar */
+  width: 320px;
+  height: 100vh;
+  background: white;
+  z-index: 1000;
+  padding: 20px;
+  box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+  transition: left 0.3s ease-in-out;
+  overflow-y: auto;
+}
+
+/* Jab 'active' class lagegi tab filter screen par aayega */
+.plp-sidebar.active {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #eaeaec;
+  padding-bottom: 15px;
+}
+
+.close-filter {
+  cursor: pointer;
+  color: #282c3f;
+}
+
+.filter-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.apply-filter-btn {
+  width: 100%;
+  background-color: #ff3f6c;
+  color: white;
+  border: none;
+  padding: 15px;
+  margin-top: 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clear-all-text {
+  color: #ff3f6c;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Desktop/Mobile Common Tweaks */
+@media screen and (max-width: 768px) {
+  .plp-sidebar {
+    width: 85%; /* Mobile pe thoda zyada chaurai */
+  }
+}
+
+
+/* ================= SORT & FILTER BUTTONS STYLING ================= */
+
+.plp-header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.sort-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: white;
+  border: 1px solid #d4d5d9;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sort-wrapper:hover {
+  border-color: #282c3f;
+  background-color: #f7f6f4;
+}
+
+.sort-select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-weight: bold;
+  color: #282c3f;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Mobile par dono buttons ko equal width dena */
+@media screen and (max-width: 768px) {
+  .plp-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .plp-header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .sort-wrapper, .filter-toggle-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 5px;
+  }
+  
+  .sort-select {
+    font-size: 12px; /* Text thoda chota taaki fit ho jaye */
+  }
+}
+
+
+/* ================= PRODUCT CARD PRICE STYLING ================= */
+
+.pdp-price-row {
+  display: flex;
+  align-items: center; /* Ek hi line mein center align karne ke liye */
+  gap: 8px; /* Dono price ke beech ka space */
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+.final-price {
+  font-weight: bold;
+  color: #282c3f; /* Dark premium black/blue */
+  font-size: 16px;
+}
+
+.cut-price {
+  text-decoration: line-through; /* YAHI WO JADU HAI JO PRICE KO CUT KAREGA */
+  color: #94969f; /* Grey color taaki wo purana lage */
+  font-size: 13px;
 }

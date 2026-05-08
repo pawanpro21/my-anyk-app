@@ -1,35 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Search, User, Heart, ShoppingCart, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Search, User, Wand2, ShoppingBag } from 'lucide-react'; 
+// 1. Yahan useNavigate import kiya hai
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoImg from './assets/anyk-logo.png';
+import banner1 from './assets/banner1.png';
+import banner2 from './assets/banner2.png';
+import banner3 from './assets/banner3.png';
 
-const slidesData = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1623091410901-00e2d268901f?auto=format&fit=crop&q=80&w=1600",
-    leftText: "Write Your Own\nCode",
-    rightText: "Workwear\nStyled by You",
-    buttonText: "SHOP NOW"
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1583391733958-620ed75f0108?auto=format&fit=crop&q=80&w=1600",
-    leftText: "Celebrate\nTradition",
-    rightText: "Festive Collection\n2026",
-    buttonText: "EXPLORE"
-  }
-];
+const slidesData = [banner1, banner2, banner3];
 
-export default function Header({cartCount }) {
+export default function Header({ cartCount }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const location = useLocation();
+  
+  // 2. Search ke liye naye states aur functions
+  const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState('');
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slidesData.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slidesData.length - 1 : prev - 1));
+  const handleSearch = (e) => {
+    // Agar 'Enter' key dabayi ya Mouse se icon click kiya
+    if (e.key === 'Enter' || e.type === 'click') {
+      if (searchInput.trim()) {
+        navigate(`/mens?search=${searchInput.trim()}`);
+      } else {
+        navigate('/mens');
+      }
+    }
   };
 
   useEffect(() => {
@@ -43,95 +39,90 @@ export default function Header({cartCount }) {
     <>
       <div className="anyk-header">
         
-        {/* Top Notification Bar */}
         <div className="anyk-notification">
           <marquee><span>💥💥OFFER ZONE: BUY 1 GET 2 FREE LIMITED TIME DEAL FOR NEW USERS</span></marquee>
         </div>
 
-        {/* Main Premium Header */}
         <div className="premium-header-container">
           
-          {/* Left: Image Logo */}
-          <div className="anyk-logo-area"> <Link to="/">
-            {/* 2. Aur yahan wo imported image lag jayegi */}
-            <img 
-              src={logoImg} 
-              alt="Anyk Originals" 
-              className="premium-image-logo" 
-            /></Link>
+          <div className="anyk-logo-area"> 
+            <Link to="/">
+              <img src={logoImg} alt="Anyk Originals" className="premium-image-logo" />
+            </Link>
           </div>
-          {/* Center: Premium Navigation Menu (Only 3 Items) */}
+          
           <nav>
-            <ul className="premium-nav-list">
+            <ul className="premium-nav-list" style={{ display: 'flex', gap: '15px', listStyle: 'none', padding: 0 }}>
               <Link to="/mens" style={{ textDecoration: 'none' }}>
-              <li className="premium-nav-item">Men's Collections</li></Link>
+                <li className="nav-box-item">MEN'S Wear</li>
+              </Link>
               <Link to="/coming-soon" style={{ textDecoration: 'none' }}>
-              <li className="premium-nav-item">Women's Collections</li></Link>
+                <li className="nav-box-item">WOMEN'S Wear</li>
+              </Link>
               <Link to="/coming-soon" style={{ textDecoration: 'none' }}>
-              <li className="premium-nav-item">Kids Collections</li></Link>
+                <li className="nav-box-item">KID'S Wear</li>
+              </Link>
             </ul>
           </nav>
 
-          {/* Right: Search Bar & Icons */}
           <div className="premium-right-section">
+            
+            {/* 3. Search Box ko functional banaya */}
             <div className="premium-search">
-              <input type="text" placeholder="Search products..." />
-              <Search size={18} className="premium-search-icon" />
+              <input 
+                type="text" 
+                placeholder="Search products..." 
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyDown={handleSearch}
+              />
+              <Search 
+                size={18} 
+                className="premium-search-icon" 
+                onClick={handleSearch} 
+                style={{ cursor: 'pointer' }}
+              />
             </div>
             
             <div className="premium-icons">
-              <Link to="/login" style={{ color: 'inherit' }}>
-                <button className="icon-btn">
+              <Link to="/login" style={{ color: 'inherit', display: 'flex' }}>
+                <button className="icon-btn tooltip-wrapper">
                   <User size={22} strokeWidth={1.5} />
+                  <span className="tooltip-text">Profile</span>
                 </button>
               </Link>
-              <button className="icon-btn">
-                <Heart size={22} strokeWidth={1.5} />
-              </button>
-              <button className="icon-btn">
-                <ShoppingCart size={22} strokeWidth={1.5} />
-                {cartCount > 0 && (
-                  <span className="cart-badge">{cartCount}</span>
-                )}
-              </button>
+              <Link to="/login" style={{ color: 'inherit', display: 'flex' }}>
+              <button className="icon-btn tooltip-wrapper">
+                <Wand2 size={22} strokeWidth={1.5} />
+                <span className="tooltip-text">Wishlist</span>
+              </button></Link>
+              <Link to="/cart" style={{ color: 'inherit', display: 'flex' }}>
+              <button className="icon-btn tooltip-wrapper">
+                <ShoppingBag size={22} strokeWidth={1.5} />
+                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                <span className="tooltip-text">Bag</span>
+              </button></Link>
             </div>
           </div>
 
         </div>
 
-        {/* Hero Carousel Banner (Remains Unchanged) */}
+        {/* Hero Carousel Banner */}
         {location.pathname === '/' && (
-        <div className="anyk-carousel-container">
-          <button className="anyk-carousel-arrow prev" onClick={prevSlide}>
-            <ChevronLeft size={24} strokeWidth={1.5} />
-          </button>
-
-          <div 
-            className="anyk-carousel-track" 
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {slidesData.map((slide) => (
-              <div 
-                key={slide.id} 
-                className="anyk-slide" 
-                style={{ backgroundImage: `url(${slide.image})` }}
-              >
-                <div className="anyk-slide-left">
-                  <h2 className="anyk-slide-title-left">{slide.leftText}</h2>
-                </div>
-                <div className="anyk-slide-right">
-                  <h3 className="anyk-slide-title-right">{slide.rightText}</h3>
-                  <button className="anyk-slide-button">{slide.buttonText}</button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <button className="anyk-carousel-arrow next" onClick={nextSlide}>
-            <ChevronRight size={24} strokeWidth={1.5} />
-          </button>
-        </div> )}
+          <div className="anyk-carousel-container" style={{ position: 'relative' }}>
+            <div className="anyk-carousel-track" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+              {slidesData.map((slideImg, index) => (
+                <Link to="/mens" key={index} className="anyk-slide" style={{ backgroundImage: `url(${slideImg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', display: 'block', textDecoration: 'none' }}></Link>
+              ))}
+            </div>
+            <div className="carousel-dots">
+              {slidesData.map((_, index) => (
+                <span key={index} className={`dot ${currentSlide === index ? 'active' : ''}`} onClick={() => setCurrentSlide(index)}></span>
+              ))}
+            </div>
+          </div> 
+        )}
       </div>
-      </>
-      )}
-    
+    </>
+  );
+}
