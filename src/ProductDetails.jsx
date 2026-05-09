@@ -4,10 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Star, Truck, Wand2, ShoppingBag, ShieldCheck, RefreshCcw, ArrowLeft } from 'lucide-react';
 
 // Similar products dikhane ke liye kuch images import ki hain
-import men1 from './assets/men1.png';
-import men2 from './assets/men2.png';
-import men3 from './assets/men3.png';
-import men4 from './assets/men4.png';
+import men1 from './assets/Men1.png';
+import men2 from './assets/Men2.png';
+import men3 from './assets/Men3.png';
+import men4 from './assets/Men4.png';
 
 export default function ProductDetails({ addToCart }) {
   const location = useLocation();
