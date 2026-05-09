@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Search, User, Wand2, ShoppingBag } from 'lucide-react'; 
-// 1. Yahan useNavigate import kiya hai
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoImg from './assets/anyk-logo.png';
 import banner1 from './assets/Banner1.png';
@@ -12,13 +11,10 @@ const slidesData = [banner1, banner2, banner3];
 export default function Header({ cartCount }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const location = useLocation();
-  
-  // 2. Search ke liye naye states aur functions
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
 
   const handleSearch = (e) => {
-    // Agar 'Enter' key dabayi ya Mouse se icon click kiya
     if (e.key === 'Enter' || e.type === 'click') {
       if (searchInput.trim()) {
         navigate(`/mens?search=${searchInput.trim()}`);
@@ -37,7 +33,8 @@ export default function Header({ cartCount }) {
 
   return (
     <>
-      <div className="anyk-header">
+      {/* ================= 1. YEH HISSA HAMESHA TOP PAR STICK RAHEGA ================= */}
+      <div className="sticky-header-wrapper">
         
         <div className="anyk-notification">
           <marquee><span>💥💥OFFER ZONE: BUY 1 GET 2 FREE LIMITED TIME DEAL FOR NEW USERS</span></marquee>
@@ -67,8 +64,7 @@ export default function Header({ cartCount }) {
 
           <div className="premium-right-section">
             
-            {/* 3. Search Box ko functional banaya */}
-            <div className="premium-search">
+            <div className="premium-search hide-on-mobile">
               <input 
                 type="text" 
                 placeholder="Search products..." 
@@ -76,53 +72,55 @@ export default function Header({ cartCount }) {
                 onChange={(e) => setSearchInput(e.target.value)}
                 onKeyDown={handleSearch}
               />
-              <Search 
-                size={18} 
-                className="premium-search-icon" 
-                onClick={handleSearch} 
-                style={{ cursor: 'pointer' }}
-              />
+              <Search size={18} className="premium-search-icon" onClick={handleSearch} style={{ cursor: 'pointer' }} />
             </div>
             
             <div className="premium-icons">
-              <Link to="/login" style={{ color: 'inherit', display: 'flex' }}>
+              {/* Profile - Hidden on mobile */}
+              <Link to="/login" className="hide-on-mobile" style={{ color: 'inherit', display: 'flex' }}>
                 <button className="icon-btn tooltip-wrapper">
                   <User size={22} strokeWidth={1.5} />
                   <span className="tooltip-text">Profile</span>
                 </button>
               </Link>
+
+              {/* Wishlist - Always visible & sticky on mobile */}
               <Link to="/login" style={{ color: 'inherit', display: 'flex' }}>
-              <button className="icon-btn tooltip-wrapper">
-                <Wand2 size={22} strokeWidth={1.5} />
-                <span className="tooltip-text">Wishlist</span>
-              </button></Link>
-              <Link to="/cart" style={{ color: 'inherit', display: 'flex' }}>
-              <button className="icon-btn tooltip-wrapper">
-                <ShoppingBag size={22} strokeWidth={1.5} />
-                {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
-                <span className="tooltip-text">Bag</span>
-              </button></Link>
+                <button className="icon-btn tooltip-wrapper">
+                  <Wand2 size={22} strokeWidth={1.5} />
+                  <span className="tooltip-text">Wishlist</span>
+                </button>
+              </Link>
+
+              {/* Bag - Hidden on mobile (Moved to bottom bar) */}
+              <Link to="/cart" className="hide-on-mobile" style={{ color: 'inherit', display: 'flex' }}>
+                <button className="icon-btn tooltip-wrapper">
+                  <ShoppingBag size={22} strokeWidth={1.5} />
+                  {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+                  <span className="tooltip-text">Bag</span>
+                </button>
+              </Link>
             </div>
           </div>
 
         </div>
-
-        {/* Hero Carousel Banner */}
-        {location.pathname === '/' && (
-          <div className="anyk-carousel-container" style={{ position: 'relative' }}>
-            <div className="anyk-carousel-track" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-              {slidesData.map((slideImg, index) => (
-                <Link to="/mens" key={index} className="anyk-slide" style={{ backgroundImage: `url(${slideImg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', display: 'block', textDecoration: 'none' }}></Link>
-              ))}
-            </div>
-            <div className="carousel-dots">
-              {slidesData.map((_, index) => (
-                <span key={index} className={`dot ${currentSlide === index ? 'active' : ''}`} onClick={() => setCurrentSlide(index)}></span>
-              ))}
-            </div>
-          </div> 
-        )}
       </div>
+
+      {/* ================= 2. CAROUSEL BANNER KO STICKY SE BAHAR NIKALA ================= */}
+      {location.pathname === '/' && (
+        <div className="anyk-carousel-container" style={{ position: 'relative' }}>
+          <div className="anyk-carousel-track" style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
+            {slidesData.map((slideImg, index) => (
+              <Link to="/mens" key={index} className="anyk-slide" style={{ backgroundImage: `url(${slideImg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', display: 'block', textDecoration: 'none' }}></Link>
+            ))}
+          </div>
+          <div className="carousel-dots">
+            {slidesData.map((_, index) => (
+              <span key={index} className={`dot ${currentSlide === index ? 'active' : ''}`} onClick={() => setCurrentSlide(index)}></span>
+            ))}
+          </div>
+        </div> 
+      )}
     </>
   );
 }

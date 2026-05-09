@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// ArrowUpDown icon add kiya hai Sorting ke liye
-import { Search, Wand2, Filter, X, ArrowUpDown } from 'lucide-react'; 
+// Yahan ShoppingBag icon add kiya gaya hai
+import { Search, Wand2, Filter, X, ArrowUpDown, ShoppingBag } from 'lucide-react'; 
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import men1 from './assets/Men1.png';
@@ -218,6 +218,34 @@ export default function MensCollection({ addToCart }) {
           )}
         </main>
       </div>
+
+      {/* ================= MOBILE BOTTOM STICKY BAR ================= */}
+      <div className="mobile-action-bar">
+        
+        {/* Sort Button */}
+        <button className="action-item" onClick={() => setSortOrder(sortOrder === 'low-to-high' ? 'high-to-low' : 'low-to-high')}>
+          <ArrowUpDown size={20} />
+          <span>SORT</span>
+        </button>
+        
+        <div className="action-divider"></div>
+        
+        {/* Filter Button */}
+        <button className="action-item" onClick={() => setIsFilterOpen(true)}>
+          <Filter size={20} />
+          <span>FILTER</span>
+        </button>
+
+        <div className="action-divider"></div>
+
+        {/* Bag (Cart) Button */}
+        <button className="action-item" onClick={() => navigate('/cart')}>
+          <ShoppingBag size={20} />
+          <span>BAG</span>
+        </button>
+        
+      </div>
+      
     </div>
   );
 }
