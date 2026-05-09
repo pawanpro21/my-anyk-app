@@ -1476,3 +1476,278 @@ body, html, #root {
     justify-content: flex-end !important;
   }
 }
+
+/* ================= MOBILE HEADER OPTIMIZATION (Logo + Search Only) ================= */
+@media screen and (max-width: 768px) {
+  
+  /* Jo cheezein mobile header mein HIDE karni hain */
+  .hide-on-mobile,
+  .premium-nav-list, /* Menu items (Men, Women, Kids) ko hide karne ke liye */
+  .premium-icons {     /* Saare icons (Wishlist, Profile, Bag) ko hide karne ke liye */
+    display: none !important;
+  }
+
+  /* Header container ko layout dene ke liye (Logo + Search) */
+  .premium-header-container {
+    display: flex !important;
+    justify-content: space-between !important; /* Logo left, Search right */
+    align-items: center !important;
+    padding: 10px 15px !important;
+    gap: 15px !important; /* Logo aur Search ke beech jagah */
+  }
+
+  /* Logo ka size mobile ke hisaab se theek karne ke liye */
+  .anyk-logo-area {
+    flex-shrink: 0 !important; /* Logo chhota na ho jaye isliye */
+  }
+
+  .premium-image-logo {
+    height: 35px !important; /* Mobile pe logo ka height */
+    width: auto !important;
+  }
+
+  /* Right section (jisme Search hai) usko failane ke liye */
+  .premium-right-section {
+    flex-grow: 1 !important; /* Bachi hui poori jagah lega */
+    display: flex !important;
+    justify-content: flex-end !important;
+    width: 100% !important;
+  }
+
+  /* Search box ki style mobile ke liye */
+  .premium-search {
+    display: flex !important; /* Mobile pe search dikhana hai, isliye pehle ki 'hide-on-mobile' class hum Header.jsx se hata denge */
+    width: 100% !important; /* Poori width lega (Logo ke baad ki) */
+    background-color: #f0f0f5 !important;
+    border-radius: 20px !important;
+    padding: 8px 12px !important;
+    align-items: center !important;
+  }
+
+  .premium-search input {
+    width: 100% !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    font-size: 14px !important;
+  }
+}
+
+/* ================= MOBILE HAMBURGER & SIDEBAR CSS ================= */
+
+/* Desktop par Hamburger Button aur Sidebar chhupa rahega */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #282c3f;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+}
+
+.mobile-side-menu {
+  position: fixed;
+  top: 0;
+  left: -300px; /* Screen ke left side se bahar chhupa hua */
+  width: 280px;
+  height: 100vh;
+  background-color: #ffffff;
+  z-index: 3000;
+  transition: left 0.3s ease-in-out;
+  box-shadow: 2px 0 15px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Jab menu open hoga toh 'left: 0' par aa jayega */
+.mobile-side-menu.open {
+  left: 0;
+}
+
+.mobile-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 2999;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaeaec;
+}
+
+.close-menu-btn {
+  background: none;
+  border: none;
+  color: #282c3f;
+  cursor: pointer;
+}
+
+.mobile-menu-content {
+  padding: 25px 20px;
+  overflow-y: auto;
+}
+
+.mobile-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-nav-list li {
+  margin-bottom: 25px;
+}
+
+.mobile-nav-list a {
+  text-decoration: none;
+  color: #282c3f;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  background: #eaeaec;
+  margin: 20px 0;
+}
+
+.mobile-action-links {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.mobile-action-links a {
+  text-decoration: none;
+  color: #282c3f;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+/* Desktop par naye mobile elements chhupayein */
+.mobile-search-toggle-btn, .mobile-search-dropdown {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  
+  /* 1. Marquee (Offer Zone) aur Desktop items ko hide karein */
+  .hide-on-mobile, .desktop-nav, .desktop-search, .desktop-icons {
+    display: none !important;
+  }
+
+  /* 2. Mobile pe Search Icon aur Hamburger Button show karein */
+  .mobile-search-toggle-btn, .mobile-menu-btn {
+    display: flex !important;
+    background: none !important;
+    border: none !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+  }
+
+  /* 3. Header ka layout (Left Logo - Right Icons) */
+  .premium-header-container {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 15px !important;
+  }
+
+  /* 4. Right side me Search aur Hamburger ko chipkana */
+  .premium-right-section {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important; /* Inke beech ki doori */
+    flex-grow: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  /* 5. Naya Search Box (Jab click hone par khulega) */
+  .mobile-search-dropdown {
+    display: flex !important;
+    padding: 10px 15px !important;
+    background-color: #ffffff !important;
+    border-top: 1px solid #eaeaec !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+  }
+
+  .mobile-search-dropdown input {
+    flex-grow: 1 !important;
+    background: #f0f0f5 !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    outline: none !important;
+  }
+  
+  .mobile-search-submit {
+    background: #282c3f !important;
+    color: white !important;
+    border: none !important;
+    padding: 0 15px !important;
+    margin-left: 10px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+  }
+}
+
+/* ================= 100% FINAL MOBILE HEADER FIX ================= */
+@media screen and (max-width: 768px) {
+  
+  /* 1. Header Wrapper ko strictly Row (ek line) mein force karo */
+  .premium-header-container {
+    display: flex !important;
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important; /* Items ko aage-peeche nahi hone dega */
+    justify-content: space-between !important; 
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  /* 2. Logo Area */
+  .anyk-logo-area {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    width: auto !important;
+  }
+
+  /* 3. Right Section (Search + Hamburger) ko strictly Row mein force karo */
+  .premium-right-section {
+    display: flex !important;
+    flex-direction: row !important; 
+    flex-wrap: nowrap !important; /* Inko bhi neeche girne se rokega */
+    justify-content: flex-end !important;
+    align-items: center !important;
+    width: auto !important;
+    gap: 15px !important;
+  }
+
+  /* 4. Desktop ki cheezein 100% hide honi chahiye */
+  .hide-on-mobile,
+  .desktop-nav,
+  .desktop-search,
+  .desktop-icons {
+    display: none !important;
+  }
+
+  /* 5. Mobile ke buttons 100% show hone chahiye */
+  .mobile-search-toggle-btn, 
+  .mobile-menu-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}

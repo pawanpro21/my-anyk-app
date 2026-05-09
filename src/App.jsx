@@ -15,9 +15,9 @@ function Home() {
     <>
       <Misc />
       <main className="anyk-about-section">
-        <h2>Welcome to Anyk.com</h2>
+        <h2>Welcome to Anyk Originals Family</h2>
         <p>
-          Anyk.com is a modern fashion brand dedicated to offering stylish and comfortable apparel for men, women, and kids. The brand focuses on everyday fashion essentials, including round neck printed t-shirts, V-neck styles, and polo t-shirts with solid collars. Designed to combine quality, affordability, and trend-driven designs, Anyk aims to deliver versatile clothing that suits every age group and occasion. Whether it's casual wear or statement pieces, Anyk brings together comfort, style, and individuality in every product.
+          anykoriginals.com is a modern fashion brand dedicated to offering stylish and comfortable apparel for men, women, and kids. The brand focuses on everyday fashion essentials, including round neck printed t-shirts, V-neck styles, and polo t-shirts with solid collars. Designed to combine quality, affordability, and trend-driven designs, Anyk aims to deliver versatile clothing that suits every age group and occasion. Whether it's casual wear or statement pieces, Anyk brings together comfort, style, and individuality in every product.
         </p>
       </main>
     </>

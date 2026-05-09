@@ -44,7 +44,7 @@ export default function Footer() {
 
       {/* Copyright Text */}
       <p className="anyk-copyright">
-        © Copyright 2026 anyk.com. All rights reserved.
+        © Copyright 2026 anykoriginals.com. All rights reserved.
       </p>
 
     </footer>
