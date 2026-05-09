@@ -3,9 +3,9 @@ import { Search, User, Wand2, ShoppingBag } from 'lucide-react';
 // 1. Yahan useNavigate import kiya hai
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logoImg from './assets/anyk-logo.png';
-import banner1 from './assets/banner1.png';
-import banner2 from './assets/banner2.png';
-import banner3 from './assets/banner3.png';
+import banner1 from './assets/Banner1.png';
+import banner2 from './assets/Banner2.png';
+import banner3 from './assets/Banner3.png';
 
 const slidesData = [banner1, banner2, banner3];
 

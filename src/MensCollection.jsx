@@ -3,20 +3,20 @@ import React, { useState } from 'react';
 import { Search, Wand2, Filter, X, ArrowUpDown } from 'lucide-react'; 
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import men1 from './assets/men1.png';
-import men2 from './assets/men2.png';
-import men3 from './assets/men3.png';
-import men4 from './assets/men4.png';
-import men5 from './assets/men5.png';
-import men16 from './assets/men16.png'; 
-import men17 from './assets/men17.png';
-import men18 from './assets/men18.png';
-import men19 from './assets/men19.png';
-import men20 from './assets/men20.png';
-import men21 from './assets/men21.png';
-import men22 from './assets/men22.png';
-import menz5 from './assets/menz5.png';
-import menz1 from './assets/menz1.png';
+import men1 from './assets/Men1.png';
+import men2 from './assets/Men2.png';
+import men3 from './assets/Men3.png';
+import men4 from './assets/Men4.png';
+import men5 from './assets/Men5.png';
+import men16 from './assets/Men16.png'; 
+import men17 from './assets/Men17.png';
+import men18 from './assets/Men18.png';
+import men19 from './assets/Men19.png';
+import men20 from './assets/Men20.png';
+import men21 from './assets/Men21.png';
+import men22 from './assets/Men22.png';
+import menz5 from './assets/Menz5.png';
+import menz1 from './assets/Menz1.png';
 
 export default function MensCollection({ addToCart }) {
   const [priceRange, setPriceRange] = useState(10100);

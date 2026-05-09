@@ -2,19 +2,19 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 // 1. Men's Images Import
-import menz1 from './assets/menz1.png';
-import menz4 from './assets/menz4.png';
-import menz5 from './assets/menz5.png';
+import menz1 from './assets/Menz1.png';
+import menz4 from './assets/Menz4.png';
+import menz5 from './assets/Menz5.png';
 
 // 2. Women's Images Import
-import women1 from './assets/women1.png';
-import women2 from './assets/women2.png';
-import women4 from './assets/women4.png';
+import women1 from './assets/Women1.png';
+import women2 from './assets/Women2.png';
+import women4 from './assets/Women4.png';
 
 // 3. Kids' Images Import
-import kidz1 from './assets/kidz1.png';
-import kidz4 from './assets/kidz4.png';
-import kidz5 from './assets/kidz5.png';
+import kidz1 from './assets/Kidz1.png';
+import kidz4 from './assets/Kidz4.png';
+import kidz5 from './assets/Kidz5.png';
 
 export default function Misc() {
   
