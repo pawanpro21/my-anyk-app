@@ -165,7 +165,7 @@ const navMenus = [
 
   // ── Build Fuse search bank ──────────────────────────────────────
   const fuseBank = useMemo(() => {
-
+     if (!Array.isArray(allProducts)) return []; 
     const kwItems = popularKeywords.map(kw => ({
       type: 'keyword',
       title: kw,
@@ -203,7 +203,7 @@ const navMenus = [
         specsText,
         searchKw: p.search_keywords || '',
         submenu: p.submenu || '',
-        type: p.type || '',
+        typeName: p.type || '',
         gender: p.gender || '',
         fabric: p.fabric || '',
       };
