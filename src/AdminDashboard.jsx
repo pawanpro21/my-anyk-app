@@ -3,7 +3,8 @@ import api from "./services/api";
 import {
   Trash2, Edit, Plus, X, Lock, LogOut, Upload, Bell, Image, Tag,
   ShoppingBag, Package, RefreshCw, ChevronDown, ToggleLeft, ToggleRight,
-  Save, AlertCircle, Check, Edit3, Search, RotateCcw, CheckCircle, XCircle
+  Save, AlertCircle, Check, Edit3, Search, RotateCcw, CheckCircle, XCircle,
+  Eye, EyeOff
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -153,7 +154,7 @@ function GlobalSearchBar({ onNavigate }) {
 // ─────────────────────────────────────────────
 function AddProductTab({ onBack }) {
   const [formData, setFormData] = useState({
-    title: '', category: 'Men', submenu: 'Round Shape', price: '', discount: '', color: '', size: '',
+    title: '', sku: '', category: 'Men', submenu: 'Round Shape', price: '', discount: '', color: '', size: '',
     stock_label: 'In Stock', sort_label: '', specifications: '', search_keywords: ''
   });
   const [images, setImages] = useState([]);
@@ -180,7 +181,9 @@ function AddProductTab({ onBack }) {
     if (mappedCategory === 'women') mappedCategory = 'womens';
     
     const data = new FormData();
-    data.append('title', formData.title.trim()); data.append('category', mappedCategory);
+    data.append('title', formData.title.trim()); 
+    data.append('sku', formData.sku.trim() || ''); 
+    data.append('category', mappedCategory);
     data.append('price', formData.price || 0); data.append('discount', formData.discount || 0);
     const keywords = [formData.search_keywords, formData.submenu, formData.sort_label, formData.stock_label].filter(Boolean).join(', ');
     data.append('color', formData.color.trim() || 'White'); data.append('size', formData.size.trim() || 'M');
@@ -200,6 +203,7 @@ function AddProductTab({ onBack }) {
     <form onSubmit={handleSubmit} className="add-product-form">
       <div className="form-grid">
         <div className="form-group"><label>Product Title</label><input type="text" name="title" onChange={handleChange} required placeholder="e.g. Blue Slim Fit Shirt" /></div>
+        <div className="form-group"><label>SKU (Admin Only)</label><input type="text" name="sku" onChange={handleChange} placeholder="e.g. SKU-001-BLU-M" /></div>
         <div className="form-group"><label>Category</label><select name="category" onChange={handleChange} value={formData.category}><option value="Men">Men</option><option value="Women">Women</option><option value="Kids">Kids</option></select></div>
         <div className="form-group"><label>Header Submenu</label><select name="submenu" onChange={handleChange} value={formData.submenu}>{SUBMENU_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}</select></div>
         <div className="form-group"><label>Sort/Marketing Label</label><select name="sort_label" onChange={handleChange} value={formData.sort_label}>{SORT_LABEL_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}</select></div>
@@ -844,12 +848,13 @@ export default function AdminDashboard() {
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [authError, setAuthError] = useState('');
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editForm, setEditForm] = useState({ id: '', title: '', price: '', discount: '', submenu: '', search_keywords: '', sort_label: '', specifications: '' });
+  const [editForm, setEditForm] = useState({ id: '', title: '', sku: '', price: '', discount: '', submenu: '', search_keywords: '', sort_label: '', specifications: '' });
   const [editCurrentImageUrl, setEditCurrentImageUrl] = useState('');
   const [editExistingImageCount, setEditExistingImageCount] = useState(0);
   const [editImageFiles, setEditImageFiles] = useState([]);
@@ -967,6 +972,7 @@ export default function AdminDashboard() {
     setEditForm({
       id: product.id,
       title: product.title,
+      sku: product.sku || '',
       price: product.priceNum || product.price,
       discount: product.discount || 0,
       submenu: product.submenu || '',
@@ -1006,6 +1012,7 @@ export default function AdminDashboard() {
     const cleanId = String(editForm.id).replace('db-', '');
     const formData = new FormData();
     formData.append('title', editForm.title);
+    formData.append('sku', editForm.sku || '');
     formData.append('price', editForm.price);
     formData.append('discount', editForm.discount);
     formData.append('submenu', editForm.submenu || '');
@@ -1050,9 +1057,37 @@ export default function AdminDashboard() {
               <label style={{ fontSize: '13px', color: '#535766', marginBottom: '5px', display: 'block', fontWeight: '700' }}>Admin Registered Email</label>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #d4d5d9', boxSizing: 'border-box' }} placeholder="admin@anyk.com" />
             </div>
-            <div>
+            <div style={{ position: 'relative' }}>
               <label style={{ fontSize: '13px', color: '#535766', marginBottom: '5px', display: 'block', fontWeight: '700' }}>Security Key Password</label>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #d4d5d9', boxSizing: 'border-box' }} placeholder="••••••••" />
+              <input
+                type={showAdminPassword ? 'text' : 'password'}
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                style={{ width: '100%', padding: '10px 42px 10px 10px', borderRadius: '4px', border: '1px solid #d4d5d9', boxSizing: 'border-box' }}
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowAdminPassword(prev => !prev)}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  right: '12px',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#535766',
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                aria-label={showAdminPassword ? 'Hide password' : 'Show password'}
+              >
+                {showAdminPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
             <button type="submit" style={{ background: '#ff3f6c', color: 'white', padding: '12px', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', letterSpacing: '0.5px' }}>
               ACCESS CONTROL AREA
@@ -1196,6 +1231,11 @@ export default function AdminDashboard() {
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '5px' }}>Product Title</label>
                 <input type="text" value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })} required style={inputStyle} />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '5px' }}>SKU (Admin Only)</label>
+                <input type="text" value={editForm.sku || ''} onChange={e => setEditForm({ ...editForm, sku: e.target.value })} style={inputStyle} />
               </div>
 
               <div style={{ display: 'flex', gap: '15px' }}>

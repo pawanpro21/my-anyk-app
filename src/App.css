@@ -891,16 +891,29 @@ body, html, #root {
 
 .option-select {
   flex: 1;
-  padding: 8px 6px;
+  padding: 8px 38px 8px 10px;
   border: 1px solid #d4d5d9;
   border-radius: 4px;
   font-size: 13px;
   color: #282c3f;
-  background-color: #fff;
+  background-color: #fff !important;
   cursor: pointer;
   font-family: inherit;
   font-weight: 500;
   transition: border-color 0.2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23282c3f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  background-origin: padding-box;
+  background-clip: padding-box;
+}
+
+.option-select::-ms-expand {
+  display: none;
 }
 
 .option-select:focus {
@@ -982,6 +995,42 @@ body, html, #root {
 
 .auth-input:focus {
   border-color: #8b2525;
+}
+
+.password-field-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.password-field-wrapper .auth-input {
+  padding-right: 44px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 6px;
+  color: #8b2525;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+}
+
+.password-toggle:hover {
+  opacity: 0.7;
+}
+
+.password-toggle:focus {
+  outline: none;
 }
 
 /* Forgot Password Text */
@@ -3114,12 +3163,27 @@ body, html, #root {
   height: 30px;
   border: 1px solid #d4d5d9;
   border-radius: 6px;
-  background: #fff;
+  background-color: #fff !important;
   color: #282c3f;
   font-size: 12px;
   font-weight: 600;
-  padding: 0 8px;
+  padding: 0 40px 0 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23282c3f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  background-origin: padding-box;
+  background-clip: padding-box;
+  cursor: pointer;
 }
+
+.product-size-select::-ms-expand {
+  display: none;
+}
+
 
 .image-bottom-label-wrap {
   position: absolute;

@@ -34,7 +34,7 @@ export default function Cart() {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
   const [address, setAddress] = useState({
-    name: '', mobile: '', pincode: '', houseNo: '', area: '', city: '', state: ''
+    name: '', mobile: '', pincode: '', houseNo: '', streetAddress: '', locality: '', area: '', city: '', state: ''
   });
 
   const getSessionUser = () => {
@@ -314,6 +314,8 @@ export default function Cart() {
       mobile: addr.mobile_number || '',
       pincode: addr.pincode || '',
       houseNo: addr.house_no || '',
+      streetAddress: addr.street_address || '',
+      locality: addr.locality || '',
       area: addr.area_colony || '',
       city: addr.city || '',
       state: addr.state || ''
@@ -328,7 +330,18 @@ export default function Cart() {
       return;
     }
     try {
-      const payload = { userId, fullName: name, mobile, pincode, houseNo, area: address.area, city, state };
+      const payload = { 
+        userId, 
+        fullName: name, 
+        mobile, 
+        pincode, 
+        houseNo, 
+        streetAddress: address.streetAddress,
+        locality: address.locality,
+        area: address.area, 
+        city, 
+        state 
+      };
       const res = editingAddressId
         ? await api.put(`/api/address/${editingAddressId}`, payload)
         : await api.post(`/api/address/add`, payload);
@@ -558,7 +571,7 @@ export default function Cart() {
                     </button>
                     {selectedAddressId === addr.id && <CheckCircle2 size={18} color="maroon" style={{ position: 'absolute', right: '15px' }} />}
                     <h4 style={{ margin: '0 0 5px 0' }}>{addr.full_name}</h4>
-                    <p style={{ margin: 0, fontSize: '13px', color: '#535766' }}>{addr.house_no}, {addr.area_colony}</p>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#535766' }}>{addr.house_no}, {addr.street_address && `${addr.street_address}, `}{addr.locality || addr.area_colony}</p>
                     <p style={{ margin: 0, fontSize: '13px', color: '#535766' }}>{addr.city}, {addr.state} - {addr.pincode}</p>
                     <p style={{ margin: '10px 0 0 0', fontSize: '13px', fontWeight: '600' }}>Mobile: {addr.mobile_number}</p>
                   </div>
@@ -567,10 +580,13 @@ export default function Cart() {
                   <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '15px' }}>
                     <input style={inputStyle} name="name" placeholder="Full Name*" value={address.name} onChange={handleAddressChange} />
                     <input style={inputStyle} name="mobile" placeholder="Mobile*" value={address.mobile} onChange={handleAddressChange} />
-                    <input style={inputStyle} name="pincode" placeholder="Pincode*" onChange={handleAddressChange} />
-                    <input style={inputStyle} name="city" placeholder="City*" onChange={handleAddressChange} />
-                    <input style={inputStyle} name="state" placeholder="State*" onChange={handleAddressChange} />
-                    <input style={{ ...inputStyle, gridColumn: isMobile ? 'span 1' : 'span 2' }} name="houseNo" placeholder="House No*" onChange={handleAddressChange} />
+                    <input style={{ ...inputStyle, gridColumn: isMobile ? 'span 1' : 'span 2' }} name="houseNo" placeholder="House No / Building Name*" value={address.houseNo} onChange={handleAddressChange} />
+                    <input style={{ ...inputStyle, gridColumn: isMobile ? 'span 1' : 'span 2' }} name="streetAddress" placeholder="Street Address / Road Name" value={address.streetAddress} onChange={handleAddressChange} />
+                    <input style={inputStyle} name="locality" placeholder="Locality / Area" value={address.locality} onChange={handleAddressChange} />
+                    <input style={inputStyle} name="area" placeholder="Landmark (Optional)" value={address.area} onChange={handleAddressChange} />
+                    <input style={inputStyle} name="city" placeholder="City*" value={address.city} onChange={handleAddressChange} />
+                    <input style={inputStyle} name="state" placeholder="State*" value={address.state} onChange={handleAddressChange} />
+                    <input style={inputStyle} name="pincode" placeholder="Pincode*" value={address.pincode} onChange={handleAddressChange} />
                     <button onClick={saveNewAddress} style={{ gridColumn: isMobile ? 'span 1' : 'span 2', padding: '15px', backgroundColor: 'maroon', color: 'white', border: 'none', fontWeight: '700', cursor: 'pointer' }}>
                       {editingAddressId ? 'UPDATE ADDRESS' : 'ADD ADDRESS'}
                     </button>
@@ -580,7 +596,7 @@ export default function Cart() {
                         onClick={() => {
                           setEditingAddressId(null);
                           setShowAddressForm(false);
-                          setAddress({ name: '', mobile: '', pincode: '', houseNo: '', area: '', city: '', state: '' });
+                          setAddress({ name: '', mobile: '', pincode: '', houseNo: '', streetAddress: '', locality: '', area: '', city: '', state: '' });
                         }}
                         style={{ gridColumn: isMobile ? 'span 1' : 'span 2', padding: '12px', backgroundColor: '#fff', color: '#535766', border: '1px solid #d4d5d9', fontWeight: '700', cursor: 'pointer' }}
                       >
@@ -599,15 +615,18 @@ export default function Cart() {
             {/* PAYMENT STEP */}
             {checkoutStep === 'payment' && (
               <div style={{ border: '1px solid #eaeaec', padding: '25px', borderRadius: '4px' }}>
-                <h3 style={{ marginBottom: '20px' }}>Payment Method</h3>
+                <h3 style={{ marginBottom: '10px' }}>Payment Method</h3>
+                <div style={{ padding: '12px', backgroundColor: '#fff5f5', border: '1px solid #ffcccc', borderRadius: '4px', fontSize: '13px', color: '#c62828', fontWeight: '600', marginBottom: '20px' }}>
+                  🔄 Payment options coming soon!
+                </div>
                 {[
                   { mode: 'COD',      label: 'Cash on Delivery (COD)',    sub: 'Pay at doorstep',                          color: 'maroon',  bg: '#fff5f5' },
                   { mode: 'Online',   label: 'UPI QR Scanner',            sub: 'Scan QR code and enter UTR manually',       color: '#03a685', bg: '#f0f9f7' },
                   { mode: 'Razorpay', label: 'Pay via Razorpay',          sub: 'UPI, Cards, Net Banking — Instant & Secure', color: '#3395FF', bg: '#f0f5ff' },
                 ].map(opt => (
-                  <div key={opt.mode} onClick={() => setPaymentMode(opt.mode)}
-                    style={{ padding: '20px', border: paymentMode === opt.mode ? `2px solid ${opt.color}` : '1px solid #eaeaec', backgroundColor: paymentMode === opt.mode ? opt.bg : 'white', borderRadius: '4px', display: 'flex', gap: '15px', cursor: 'pointer', marginBottom: '15px' }}>
-                    <input type="radio" checked={paymentMode === opt.mode} readOnly style={{ accentColor: opt.color }} />
+                  <div key={opt.mode}
+                    style={{ padding: '20px', border: '1px solid #eaeaec', backgroundColor: 'white', borderRadius: '4px', display: 'flex', gap: '15px', cursor: 'not-allowed', marginBottom: '15px', opacity: 0.6, pointerEvents: 'none' }}>
+                    <input type="radio" checked={false} readOnly style={{ accentColor: opt.color }} />
                     <div style={{ textAlign: 'left' }}>
                       <strong>{opt.label}</strong>
                       <p style={{ fontSize: '12px', margin: '2px 0 0 0', color: '#535766' }}>{opt.sub}</p>
@@ -689,7 +708,7 @@ export default function Cart() {
 
               {checkoutStep === 'bag'     && <button onClick={() => setCheckoutStep('address')}  style={{ ...actionBtnStyle, backgroundColor: 'maroon'      }}>PLACE ORDER</button>}
               {checkoutStep === 'address' && !showAddressForm && <button onClick={() => setCheckoutStep('payment')} style={{ ...actionBtnStyle, backgroundColor: 'maroon' }}>CONTINUE</button>}
-              {checkoutStep === 'payment' && <button onClick={handleFinalOrder} style={{ ...actionBtnStyle, backgroundColor: payBtnColor }}>{payBtnLabel}</button>}
+              {checkoutStep === 'payment' && <button disabled onClick={handleFinalOrder} style={{ ...actionBtnStyle, backgroundColor: '#ccc', cursor: 'not-allowed', opacity: 0.6 }}>{payBtnLabel}</button>}
             </div>
           </div>
         </div>

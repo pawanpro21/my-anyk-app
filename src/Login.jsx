@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Mail, Phone, Lock, User, RefreshCw } from 'lucide-react';
+import { Mail, Phone, Lock, User, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import Swal from 'sweetalert2';
 import api from './services/api';
 
 export default function Login() {
-  const [view, setView] = useState('login'); // login, signup, signupOtp, forgot, reset
+  const [view, setView] = useState('login'); // login, signup, signupOtp, forgot, reset, loginOtp
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -24,10 +26,13 @@ export default function Login() {
     const requestedPath = location.state?.from?.pathname || redirectParam;
     const normalizedRole = String(role || '').trim().toLowerCase();
 
-    if (normalizedRole === 'admin') return '/admin';
     if (requestedPath && requestedPath !== '/login' && !requestedPath.startsWith('/login')) {
-      return requestedPath;
+      if (requestedPath === '/admin' && normalizedRole === 'admin') {
+        return '/admin';
+      }
+      return '/';
     }
+
     return '/';
   };
 
@@ -49,6 +54,82 @@ export default function Login() {
       ...formData, 
       [e.target.name]: e.target.value 
     });
+  };
+
+  const handleSendLoginOtp = async () => {
+    if (!formData.email) {
+      Swal.fire({
+        title: 'Please enter email or mobile',
+        text: 'We need your email or mobile to send the OTP.',
+        icon: 'warning',
+        confirmButtonColor: 'maroon'
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await api.post('/api/login-otp', {
+        identifier: formData.email
+      });
+      Swal.fire({
+        title: 'OTP Sent!',
+        text: 'Check your email or mobile for the login code.',
+        icon: 'success',
+        confirmButtonColor: 'maroon'
+      });
+      setView('loginOtp');
+    } catch (err) {
+      Swal.fire({
+        title: 'OTP Failed',
+        text: err.response?.data?.message || 'Unable to send OTP at this time.',
+        icon: 'error',
+        confirmButtonColor: 'maroon'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyLoginOtp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const loginRes = await api.post('/api/verify-login-otp', {
+        identifier: formData.email,
+        otp: formData.otp
+      });
+
+      if (loginRes.data?.token) {
+        sessionStorage.setItem('auth_token', loginRes.data.token);
+      }
+
+      if (loginRes.data?.user) {
+        sessionStorage.setItem('auth_user', JSON.stringify(loginRes.data.user));
+      }
+
+      const userRole = loginRes.data?.user?.role;
+      const redirectTo = getRedirectPath(userRole);
+
+      Swal.fire({
+        title: 'Login Successful!',
+        text: 'You are now logged in.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        position: 'center'
+      });
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      Swal.fire({
+        title: 'Login Error',
+        text: err.response?.data?.message || err.message || 'OTP verification failed.',
+        icon: 'error',
+        confirmButtonColor: 'maroon'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 1. SIGNUP - OTP SEND
@@ -243,6 +324,7 @@ export default function Login() {
             {view === 'login' && 'Welcome Back'}
             {view === 'signup' && 'Create Account'}
             {view === 'signupOtp' && 'Verify Email'}
+            {view === 'loginOtp' && 'Verify OTP'}
             {view === 'forgot' && 'Reset Password'}
             {view === 'reset' && 'Set New Password'}
           </h2>
@@ -271,13 +353,13 @@ export default function Login() {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group password-field-wrapper">
               <label className="auth-label">
                 <Lock size={16} /> Password
               </label>
 
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 className="auth-input"
                 placeholder="••••••••"
@@ -285,7 +367,23 @@ export default function Login() {
                 onChange={handleChange}
                 required
               />
+              <button
+                type="button"
+                className="password-toggle"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword(prev => !prev)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
+
+            <span
+              onClick={handleSendLoginOtp}
+              className="link-text"
+              style={{ marginBottom: '8px' }}
+            >
+              Login with OTP
+            </span>
 
             <span
               onClick={() => setView('forgot')}
@@ -309,6 +407,46 @@ export default function Login() {
                 className="toggle-link"
               >
                 Sign up
+              </span>
+            </p>
+
+          </form>
+        )}
+
+        {view === 'loginOtp' && (
+          <form onSubmit={handleVerifyLoginOtp} className="auth-form">
+
+            <div className="input-group">
+              <label className="auth-label">
+                <RefreshCw size={16} /> Enter OTP
+              </label>
+
+              <input
+                type="text"
+                name="otp"
+                className="auth-input"
+                placeholder="Enter OTP sent to your email or mobile"
+                value={formData.otp}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="auth-btn"
+            >
+              {loading ? 'Verifying...' : 'VERIFY & LOGIN'}
+            </button>
+
+            <p className="toggle-text">
+              Back to{' '}
+              <span
+                onClick={() => setView('login')}
+                className="toggle-link"
+              >
+                Password login
               </span>
             </p>
 
@@ -366,13 +504,13 @@ export default function Login() {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group password-field-wrapper">
               <label className="auth-label">
                 <Lock size={16} /> Set Password
               </label>
 
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 className="auth-input"
                 placeholder="Create strong password"
@@ -380,6 +518,14 @@ export default function Login() {
                 onChange={handleChange}
                 required
               />
+              <button
+                type="button"
+                className="password-toggle"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword(prev => !prev)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
             <button
@@ -504,13 +650,13 @@ export default function Login() {
               />
             </div>
 
-            <div className="input-group">
+            <div className="input-group password-field-wrapper">
               <label className="auth-label">
                 <Lock size={16} /> New Password
               </label>
 
               <input
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 name="newPassword"
                 className="auth-input"
                 placeholder="Set new password"
@@ -518,6 +664,14 @@ export default function Login() {
                 onChange={handleChange}
                 required
               />
+              <button
+                type="button"
+                className="password-toggle"
+                aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowNewPassword(prev => !prev)}
+              >
+                {showNewPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
 
             <button

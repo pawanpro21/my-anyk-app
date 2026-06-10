@@ -204,7 +204,7 @@ export default function App() {
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/login" element={<Login />} />
               
-              <Route path="/product/:id" element={<ProductDetails addToCart={handleAddToCart} />} />
+              <Route path="/product/:id/:slug?" element={<ProductDetails addToCart={handleAddToCart} />} />
               
               {/* YAHAN FIX KIYA GAYA HAI: Cart route ko properly format kiya hai */}
               <Route path="/cart" element={<ProtectedRoute><Cart /> </ProtectedRoute>}/>
