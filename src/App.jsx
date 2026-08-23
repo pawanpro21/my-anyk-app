@@ -200,7 +200,7 @@ export default function App() {
               
               {/* 4. MensCollection ko addToCart function bhej rahe hain */}
               <Route path="/mens" element={<MensCollection addToCart={handleAddToCart} />} />
-              
+              <Route path="/womens" element={<WomensCollection addToCart={handleAddToCart} />} />
               <Route path="/coming-soon" element={<ComingSoon />} />
               <Route path="/login" element={<Login />} />
               

@@ -630,6 +630,16 @@ function OrdersTab() {
     } catch { alert("Status update failed!"); } finally { setUpdatingId(null); }
   };
 
+  const downloadLabel = async (orderId) => {
+    try {
+      const res = await api.get(`/api/admin/orders/${orderId}/label`, { responseType: 'blob' });
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    } catch (err) {
+      Swal.fire('Error', 'Label could not be generated!', 'error');
+    }
+  };
   const filtered = filter === 'All' ? orders : orders.filter(o => o.order_status === filter);
 
   return (
@@ -669,6 +679,12 @@ function OrdersTab() {
                     <ChevronDown size={14} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#282c3f' }} />
                   </div>
                 )}
+                              <button
+                  onClick={() => downloadLabel(order.order_id)}
+                  style={{ padding: '8px 14px', borderRadius: '6px', border: '1.5px solid #282c3f', background: 'white', color: '#282c3f', fontWeight: '700', fontSize: '12px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                >
+                  <Package size={13} /> Print Label
+                </button>
                 {updatingId === order.order_id && <span style={{ fontSize: '12px', color: '#94969f' }}>Updating...</span>}
               </div>
             </div>

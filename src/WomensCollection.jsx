@@ -92,7 +92,7 @@ const getProductSizeOptions = (dbItem = {}) => {
   return ['S', 'M', 'L', 'XL'];
 };
 
-export default function MensCollection({ addToCart, updateCartCount }) {
+export default function WomensCollection({ addToCart, updateCartCount }) {
   const [priceRange, setPriceRange] = useState(10100);
   const [discountFilter, setDiscountFilter] = useState(0);
   const [selectedColors, setSelectedColors] = useState([]);
@@ -162,7 +162,7 @@ export default function MensCollection({ addToCart, updateCartCount }) {
           };
         });
 const mensOnly = fetchedProducts.filter(
-  (p) => String(p.category || '').toLowerCase() === 'mens'
+  (p) => String(p.category || '').toLowerCase() === 'womens'
 );
         setQuantities(prev => ({ ...savedQuantities, ...prev }));
         setAllProducts(mensOnly);
@@ -341,7 +341,7 @@ const mensOnly = fetchedProducts.filter(
     setSortOrder('');
 
     if (searchQuery) {
-      navigate('/mens', { replace: true });
+      navigate('/womens', { replace: true });
     }
   };
 
@@ -393,7 +393,7 @@ const mensOnly = fetchedProducts.filter(
   return (
     <div className="plp-container">
       <div className="plp-header-row">
-        <h1 className="plp-title">Men's Collection</h1>
+        <h1 className="plp-title">Women's Collection</h1>
         {searchQuery && (
   <div
     style={{

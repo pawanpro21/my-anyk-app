@@ -75,7 +75,7 @@ const navMenus = [
   },
   {
     label: "WOMEN'S WEAR",
-    path: "/coming-soon?category=women",
+    path: "/womens?category=women",
     activeKey: "women",
     submenu: [
       { label: "Round Shape T-Shirt", path: "/coming-soon?category=women" },

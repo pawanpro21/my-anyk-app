@@ -492,7 +492,7 @@ export default function Cart() {
             <h2 style={{ fontSize: '20px', marginBottom: '10px' }}>Secure Payment</h2>
             <p style={{ color: '#535766', marginBottom: '15px' }}>Amount: <strong style={{ color: 'maroon', fontSize: '22px' }}>₹{finalPayable}</strong></p>
             <div style={{ padding: '15px', border: '1px solid #eee', display: 'inline-block', borderRadius: '8px', marginBottom: '15px' }}>
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=anykoriginals@okicici%26pn=ANYK_ORIGINALS%26am=${finalPayable}%26cu=INR`} alt="QR" style={{ width: '180px' }} />
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9891120220@ptyes%26pn=AY%20Clothing%20Enterprises%26am=${finalPayable}%26cu=INR`} alt="QR" style={{ width: '180px' }} />
             </div>
             <div style={{ marginBottom: '20px', textAlign: 'left' }}>
               <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#535766' }}>ENTER 12-DIGIT TRANSACTION ID (UTR)*</label>
@@ -615,25 +615,39 @@ export default function Cart() {
             {/* PAYMENT STEP */}
             {checkoutStep === 'payment' && (
               <div style={{ border: '1px solid #eaeaec', padding: '25px', borderRadius: '4px' }}>
-                <h3 style={{ marginBottom: '10px' }}>Payment Method</h3>
-                <div style={{ padding: '12px', backgroundColor: '#fff5f5', border: '1px solid #ffcccc', borderRadius: '4px', fontSize: '13px', color: '#c62828', fontWeight: '600', marginBottom: '20px' }}>
-                  🔄 Payment options coming soon!
-                </div>
-                {[
-                  { mode: 'COD',      label: 'Cash on Delivery (COD)',    sub: 'Pay at doorstep',                          color: 'maroon',  bg: '#fff5f5' },
-                  { mode: 'Online',   label: 'UPI QR Scanner',            sub: 'Scan QR code and enter UTR manually',       color: '#03a685', bg: '#f0f9f7' },
-                  { mode: 'Razorpay', label: 'Pay via Razorpay',          sub: 'UPI, Cards, Net Banking — Instant & Secure', color: '#3395FF', bg: '#f0f5ff' },
-                ].map(opt => (
-                  <div key={opt.mode}
-                    style={{ padding: '20px', border: '1px solid #eaeaec', backgroundColor: 'white', borderRadius: '4px', display: 'flex', gap: '15px', cursor: 'not-allowed', marginBottom: '15px', opacity: 0.6, pointerEvents: 'none' }}>
-                    <input type="radio" checked={false} readOnly style={{ accentColor: opt.color }} />
-                    <div style={{ textAlign: 'left' }}>
-                      <strong>{opt.label}</strong>
-                      <p style={{ fontSize: '12px', margin: '2px 0 0 0', color: '#535766' }}>{opt.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+               <h3 style={{ marginBottom: '20px' }}>Payment Method</h3>
+{[
+  { mode: 'COD',      label: 'Cash on Delivery (COD)', sub: 'Pay at doorstep',                          color: 'maroon',  bg: '#fff5f5', disabled: false },
+  { mode: 'Online',   label: 'UPI QR Scanner',         sub: 'Scan QR code and enter UTR manually',       color: '#03a685', bg: '#f0f9f7', disabled: false },
+  { mode: 'Razorpay', label: 'Pay via Razorpay',       sub: 'UPI, Cards, Net Banking — Coming Soon',      color: '#3395FF', bg: '#f0f5ff', disabled: true },
+].map(opt => (
+  <div key={opt.mode}
+    onClick={() => { if (!opt.disabled) setPaymentMode(opt.mode); }}
+    style={{
+      padding: '20px',
+      border: paymentMode === opt.mode ? `2px solid ${opt.color}` : '1px solid #eaeaec',
+      backgroundColor: opt.disabled ? '#f5f5f6' : (paymentMode === opt.mode ? opt.bg : 'white'),
+      borderRadius: '4px',
+      display: 'flex',
+      gap: '15px',
+      cursor: opt.disabled ? 'not-allowed' : 'pointer',
+      marginBottom: '15px',
+      opacity: opt.disabled ? 0.55 : 1,
+      pointerEvents: opt.disabled ? 'none' : 'auto'
+    }}>
+    <input type="radio" checked={paymentMode === opt.mode} disabled={opt.disabled} onChange={() => setPaymentMode(opt.mode)} style={{ accentColor: opt.color }} />
+    <div style={{ textAlign: 'left' }}>
+      <strong>{opt.label}</strong>
+      <p style={{ fontSize: '12px', margin: '2px 0 0 0', color: '#535766' }}>{opt.sub}</p>
+    </div>
+    {opt.disabled && (
+      <span style={{ marginLeft: 'auto', fontSize: '10px', fontWeight: '800', color: '#94969f', background: '#eaeaec', padding: '4px 10px', borderRadius: '20px', height: 'fit-content', alignSelf: 'center' }}>
+        SOON
+      </span>
+    )}
+  </div>
+))}
+</div>
             )}
           </div>
 
@@ -708,7 +722,7 @@ export default function Cart() {
 
               {checkoutStep === 'bag'     && <button onClick={() => setCheckoutStep('address')}  style={{ ...actionBtnStyle, backgroundColor: 'maroon'      }}>PLACE ORDER</button>}
               {checkoutStep === 'address' && !showAddressForm && <button onClick={() => setCheckoutStep('payment')} style={{ ...actionBtnStyle, backgroundColor: 'maroon' }}>CONTINUE</button>}
-              {checkoutStep === 'payment' && <button disabled onClick={handleFinalOrder} style={{ ...actionBtnStyle, backgroundColor: '#ccc', cursor: 'not-allowed', opacity: 0.6 }}>{payBtnLabel}</button>}
+              {checkoutStep === 'payment' && <button onClick={handleFinalOrder} style={{ ...actionBtnStyle, backgroundColor: payBtnColor }}>{payBtnLabel}</button>}
             </div>
           </div>
         </div>
