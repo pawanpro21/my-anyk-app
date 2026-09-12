@@ -119,7 +119,7 @@ export default function Misc() {
         <div className="mens-grid">
           {womensCategories.map((item) => (
             <Link
-              to={`/coming-soon`}
+              to={`/womens`}
               key={`women-${item.id}`}
               className="mens-card"
               style={{ textDecoration: 'none' }}

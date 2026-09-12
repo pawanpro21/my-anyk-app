@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, Tag, Trash2, CheckCircle2, ChevronLeft, Plus, X, Pencil } from 'lucide-react';
+import { ShoppingBag, Tag, Trash2, CheckCircle2, ChevronLeft, Plus, Minus, X, Pencil } from 'lucide-react';
 import api from "./services/api";
 import Swal from 'sweetalert2';
 import { API_URL } from "./config/api";
@@ -22,6 +22,7 @@ export default function Cart() {
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [couponError, setCouponError] = useState('');
   const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
   const [userId, setUserId] = useState(null);
   const [checkoutStep, setCheckoutStep] = useState('bag');
 
@@ -78,6 +79,7 @@ export default function Cart() {
       image_url: imageUrl,
       priceNum: Number(item.priceNum ?? item.price) || 0,
       discount: Number(item.discount) || 0,
+      shippingFee: Number(item.shippingFee ?? item.shipping_fee) || 0,
       selectedSize: item.selectedSize || item.size || 'M',
       quantity: Number(item.quantity) || 1
     };
@@ -220,14 +222,24 @@ export default function Cart() {
   const couponDiscountVal = appliedCoupon ? Math.round((discountedPrice * Number(appliedCoupon.value)) / 100) : 0;
   const totalAmount       = Math.round(discountedPrice - couponDiscountVal);
 
-  // ✅ FIX 2: Shipping — discounted+coupon amount ke baad check karo (249+ free)
-  const deliveryFee  = cartItems.length === 0 ? 0 : totalAmount >= 249 ? 0 : 49;
+  // Shipping is free at ₹999+; below that use the admin-set product fee.
+  // A zero/unset product fee keeps the default ₹49 charge.
+  const configuredShippingFees = cartItems
+    .map(item => Number(item.shippingFee ?? item.shipping_fee) || 0)
+    .filter(fee => fee > 0);
+  const defaultShippingFee = configuredShippingFees.length > 0
+    ? Math.max(...configuredShippingFees)
+    : 49;
+  const deliveryFee  = cartItems.length === 0 ? 0 : totalAmount >= 999 ? 0 : defaultShippingFee;
   const finalPayable = Math.round(totalAmount + deliveryFee);
 
   // ─── Remove item ────────────────────────────────────────────────────────────
-  const removeItem = (targetId) => {
-    const cleanTargetId = getCleanProductId(targetId);
-    const productToRemove = cartItems.find(item => getCleanProductId(item) === cleanTargetId);
+  const removeItem = (targetItem) => {
+    const cleanTargetId = getCleanProductId(targetItem);
+    const selectedSize = targetItem.selectedSize || targetItem.size || 'M';
+    const productToRemove = cartItems.find(item =>
+      getCleanProductId(item) === cleanTargetId && (item.selectedSize || item.size || 'M') === selectedSize
+    );
     Swal.fire({
       title: 'REMOVE ITEM?',
       text: "Are you sure you want to remove this item from your bag?",
@@ -242,7 +254,7 @@ export default function Cart() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await api.delete(`/api/cart/remove/${encodeURIComponent(cleanTargetId)}`);
+          await api.delete(`/api/cart/remove/${encodeURIComponent(cleanTargetId)}`, { params: { size: selectedSize } });
           const updated = await fetchBackendCart();
           if (updated.length === 0) removeCoupon();
           Swal.fire({ title: 'Removed!', icon: 'success', timer: 1000, showConfirmButton: false });
@@ -252,7 +264,7 @@ export default function Cart() {
       } else if (result.isDenied) {
         try {
           if (productToRemove) await api.post('/api/wishlist/add', { product_id: cleanTargetId });
-          await api.delete(`/api/cart/remove/${encodeURIComponent(cleanTargetId)}`);
+          await api.delete(`/api/cart/remove/${encodeURIComponent(cleanTargetId)}`, { params: { size: selectedSize } });
           const updated = await fetchBackendCart();
           if (updated.length === 0) removeCoupon();
           Swal.fire({ title: 'Moved to Wishlist! ✨', icon: 'success', timer: 1500, showConfirmButton: false });
@@ -263,6 +275,34 @@ export default function Cart() {
     });
   };
 
+  const updateItemQuantity = async (item, delta) => {
+    const nextQuantity = Math.max(1, (Number(item.quantity) || 1) + delta);
+    const selectedSize = item.selectedSize || item.size || 'M';
+    const productId = getCleanProductId(item);
+
+    setCartItems(currentItems => currentItems.map(currentItem => (
+      currentItem.cart_id === item.cart_id
+        ? { ...currentItem, quantity: nextQuantity }
+        : currentItem
+    )));
+
+    try {
+      await api.put('/api/cart/update', {
+        product_id: productId,
+        quantity: nextQuantity,
+        size: selectedSize
+      });
+    } catch (err) {
+      await fetchBackendCart();
+      Swal.fire({
+        title: 'Quantity Update Failed',
+        text: err.response?.data?.message || 'Quantity could not be updated.',
+        icon: 'error',
+        confirmButtonColor: 'maroon'
+      });
+    }
+  };
+
   // ✅ FIX 3: Remove coupon function
   const removeCoupon = () => {
     setAppliedCoupon(null);
@@ -271,23 +311,29 @@ export default function Cart() {
 
   // ─── Apply coupon ────────────────────────────────────────────────────────────
   const handleApplyCoupon = async (coupon) => {
-    if (Number(discountedPrice) < Number(coupon.min)) {
+    const code = String(coupon.code || '').trim().toUpperCase();
+    if (!code) {
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+    if (coupon.min && Number(discountedPrice) < Number(coupon.min)) {
       setCouponError(`Add ₹${coupon.min - discountedPrice} more to apply this code.`);
       return;
     }
     try {
       const response = await api.post(`/api/validate-coupon`, {
-        code: coupon.code,
+        code,
         cartValue: Math.round(discountedPrice),
         userId
       });
       if (response.data.success) {
         const couponData = {
           id:    response.data.couponId,
-          code:  coupon.code,
-          value: coupon.value
+          code,
+          value: response.data.discount ?? coupon.value
         };
         setAppliedCoupon(couponData);
+        setCouponCode(code);
         setCouponError('');
         Swal.fire({ title: '🎉 Coupon Applied!', icon: 'success', timer: 1500, showConfirmButton: false });
       }
@@ -295,6 +341,11 @@ export default function Cart() {
       setCouponError(err.response?.data?.message || "Coupon invalid or expired");
       setAppliedCoupon(null);
     }
+  };
+
+  const handleManualCouponApply = (event) => {
+    event.preventDefault();
+    handleApplyCoupon({ code: couponCode });
   };
 
   const goToProductPage = (item) => {
@@ -536,19 +587,30 @@ export default function Cart() {
               <>
                 <h2 style={{ fontSize: isMobile ? '16px' : '20px', fontWeight: '700', marginBottom: isMobile ? '14px' : '20px' }}>MY BAG ({cartItems.length} Items)</h2>
                 {cartItems.map((item, rowIdx) => (
-                  <div key={`cart-${item.product_id || item.id}-${rowIdx}`} style={{ border: '1px solid #eaeaec', padding: isMobile ? '12px' : '15px', display: 'flex', gap: isMobile ? '12px' : '20px', marginBottom: '15px', position: 'relative' }}>
+                  <div key={`cart-${item.cart_id || item.product_id || item.id}-${item.selectedSize || item.size || 'M'}-${rowIdx}`} style={{ border: '1px solid #eaeaec', padding: isMobile ? '12px' : '15px', display: 'flex', gap: isMobile ? '12px' : '20px', marginBottom: '15px', position: 'relative' }}>
                     <img src={item.image} alt="" style={{ width: isMobile ? '88px' : '100px', height: isMobile ? '112px' : '130px', objectFit: 'cover', flexShrink: 0 }} />
                     <div style={{ textAlign: 'left', minWidth: 0, flex: 1, paddingRight: isMobile ? '22px' : '28px' }}>
                       <button type="button" onClick={() => goToProductPage(item)} style={{ fontSize: isMobile ? '13px' : '16px', lineHeight: '1.3', padding: 0, border: 'none', background: 'none', color: '#282c3f', fontWeight: '700', cursor: 'pointer', textAlign: 'left', width: '100%', whiteSpace: 'normal', wordBreak: 'break-word' }}>{item.name}</button>
                       <p style={{ color: '#94969f', fontSize: '13px', margin: '5px 0' }}>Size: {item.selectedSize || 'M'}</p>
-                      <p style={{ color: '#282c3f', fontSize: '13px', margin: '2px 0', fontWeight: '600' }}>Qty: {item.quantity || 1}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '8px 0' }}>
+                        <span style={{ color: '#282c3f', fontSize: '13px', fontWeight: '600' }}>Qty:</span>
+                        <button type="button" aria-label="Decrease quantity" onClick={() => updateItemQuantity(item, -1)} disabled={Number(item.quantity) <= 1}
+                          style={{ width: '24px', height: '24px', border: '1px solid #d4d5d9', background: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: Number(item.quantity) <= 1 ? 'not-allowed' : 'pointer', opacity: Number(item.quantity) <= 1 ? 0.45 : 1 }}>
+                          <Minus size={13} />
+                        </button>
+                        <span style={{ minWidth: '18px', textAlign: 'center', fontSize: '13px', fontWeight: '700' }}>{item.quantity || 1}</span>
+                        <button type="button" aria-label="Increase quantity" onClick={() => updateItemQuantity(item, 1)}
+                          style={{ width: '24px', height: '24px', border: '1px solid #d4d5d9', background: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                          <Plus size={13} />
+                        </button>
+                      </div>
                       <span style={{ fontWeight: '700' }}>
                         ₹{item.discount > 0
                           ? Math.round((Number(item.priceNum) * (1 - Number(item.discount) / 100)) * (Number(item.quantity) || 1))
                           : Math.round(Number(item.priceNum) * (Number(item.quantity) || 1))}
                       </span>
                     </div>
-                    <Trash2 size={18} style={{ position: 'absolute', right: isMobile ? '10px' : '15px', top: isMobile ? '10px' : '14px', cursor: 'pointer', opacity: 0.5 }} onClick={() => removeItem(item.product_id || item.id)} />
+                    <Trash2 size={18} style={{ position: 'absolute', right: isMobile ? '10px' : '15px', top: isMobile ? '10px' : '14px', cursor: 'pointer', opacity: 0.5 }} onClick={() => removeItem(item)} />
                   </div>
                 ))}
               </>
@@ -618,8 +680,8 @@ export default function Cart() {
                <h3 style={{ marginBottom: '20px' }}>Payment Method</h3>
 {[
   { mode: 'COD',      label: 'Cash on Delivery (COD)', sub: 'Pay at doorstep',                          color: 'maroon',  bg: '#fff5f5', disabled: false },
-  { mode: 'Online',   label: 'UPI QR Scanner',         sub: 'Scan QR code and enter UTR manually',       color: '#03a685', bg: '#f0f9f7', disabled: false },
-  { mode: 'Razorpay', label: 'Pay via Razorpay',       sub: 'UPI, Cards, Net Banking — Coming Soon',      color: '#3395FF', bg: '#f0f5ff', disabled: true },
+  { mode: 'Online',   label: 'UPI QR Scanner',         sub: 'Scan QR code and enter UTR manually',       color: '#03a685', bg: '#f0f9f7', disabled: true },
+  { mode: 'Razorpay', label: 'Pay Online',       sub: 'UPI, Cards, Net Banking',                    color: '#3395FF', bg: '#f0f5ff', disabled: false },
 ].map(opt => (
   <div key={opt.mode}
     onClick={() => { if (!opt.disabled) setPaymentMode(opt.mode); }}
@@ -680,6 +742,25 @@ export default function Cart() {
                   </div>
                 )}
 
+                {!appliedCoupon && (
+                  <form onSubmit={handleManualCouponApply} style={{ display: 'flex', gap: '8px', marginBottom: '14px' }}>
+                    <input
+                      type="text"
+                      value={couponCode}
+                      onChange={(event) => setCouponCode(event.target.value.toUpperCase())}
+                      placeholder="Enter coupon code"
+                      aria-label="Coupon code"
+                      style={{ ...inputStyle, flex: 1, minWidth: 0 }}
+                    />
+                    <button
+                      type="submit"
+                      style={{ padding: '0 16px', background: 'maroon', color: 'white', border: 'none', borderRadius: '4px', fontWeight: '700', cursor: 'pointer' }}
+                    >
+                      APPLY
+                    </button>
+                  </form>
+                )}
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {availableCoupons.map(cp => (
                     <div key={cp.code} onClick={() => handleApplyCoupon(cp)}
@@ -711,7 +792,7 @@ export default function Cart() {
                 <span>Shipping Fee</span>
                 <span style={{ color: deliveryFee === 0 ? '#03a685' : '#282c3f' }}>
                   {deliveryFee === 0
-                    ? <span>FREE <span style={{ fontSize: '11px', color: '#03a685' }}>(₹249+ par free)</span></span>
+                    ? <span>FREE <span style={{ fontSize: '11px', color: '#03a685' }}>(₹999+ per free)</span></span>
                     : `₹${deliveryFee}`}
                 </span>
               </div>

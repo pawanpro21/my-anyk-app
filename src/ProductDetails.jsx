@@ -203,7 +203,9 @@ export default function ProductDetails({ addToCart, updateCartCount }) {
       console.error('Cart check failed:', err.response?.data || err.message || err);
     }
 
-    const alreadyInCart = existingBackendCart.some(item => String(item.product_id) === productId);
+    const alreadyInCart = existingBackendCart.some(item =>
+      String(item.product_id) === productId && (item.size || 'M') === selectedSizeValue
+    );
 
     if (alreadyInCart) {
       await api.put('/api/cart/update', payload);

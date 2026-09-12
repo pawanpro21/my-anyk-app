@@ -147,6 +147,7 @@ export default function MensCollection({ addToCart, updateCartCount }) {
             id: uniqueId,
             product_id: dbItem.product_id || dbItem.id,
             name: dbItem.title,
+            category: dbItem.category || '',
             color: dbItem.color || 'White',
             priceNum: Number(dbItem.price) || 0,
             discount: Number(dbItem.discount) || 0,
@@ -161,10 +162,11 @@ export default function MensCollection({ addToCart, updateCartCount }) {
             sizeOptions: getProductSizeOptions(dbItem)
           };
         });
-const mensOnly = fetchedProducts.filter(
-  (p) => String(p.category || '').toLowerCase() === 'mens'
-);
+
         setQuantities(prev => ({ ...savedQuantities, ...prev }));
+        const mensOnly = fetchedProducts.filter(
+          (p) => String(p.category || '').toLowerCase() === 'mens'
+        );
         setAllProducts(mensOnly);
 
       })
@@ -193,7 +195,9 @@ const mensOnly = fetchedProducts.filter(
       console.error('Cart check failed:', err.response?.data || err.message || err);
     }
 
-    const alreadyInCart = existingBackendCart.some(item => String(item.product_id) === productId);
+    const alreadyInCart = existingBackendCart.some(item =>
+      String(item.product_id) === productId && (item.size || 'M') === selectedSize
+    );
 
     if (alreadyInCart) {
       await api.put('/api/cart/update', payload);

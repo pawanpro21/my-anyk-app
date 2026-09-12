@@ -15,6 +15,7 @@ const Cart = lazy(() => import('./Cart'));
 const AdminDashboard = lazy(() => import('./AdminDashboard'));
 const Wishlist = lazy(() => import('./Wishlist'));
 const YourOrders = lazy(() => import('./YourOrders'));
+const WomensCollection = lazy(() => import('./WomensCollection'));
 
 function upsertMetaByName(name, content) {
   let el = document.querySelector(`meta[name="${name}"]`);

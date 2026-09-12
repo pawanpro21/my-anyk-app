@@ -155,7 +155,7 @@ function GlobalSearchBar({ onNavigate }) {
 function AddProductTab({ onBack }) {
   const [formData, setFormData] = useState({
     title: '', sku: '', category: 'Men', submenu: 'Round Shape', price: '', discount: '', color: '', size: '',
-    stock_label: 'In Stock', sort_label: '', specifications: '', search_keywords: ''
+    stock_label: 'In Stock', sort_label: '', specifications: '', search_keywords: '', shipping_fee: 0
   });
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
@@ -191,6 +191,7 @@ function AddProductTab({ onBack }) {
     data.append('stock_label', formData.stock_label);
     data.append('sort_label', formData.sort_label);
     data.append('specifications', finalSpecs); data.append('search_keywords', keywords.trim());
+    data.append('shipping_fee', Number(formData.shipping_fee || 0));
     images.forEach(img => data.append('images', img));
 
     try {
@@ -210,6 +211,7 @@ function AddProductTab({ onBack }) {
         <div className="form-group"><label>Stock / Product Badge</label><select name="stock_label" onChange={handleChange} value={formData.stock_label}><option value="">None</option>{STOCK_QUICK_PICKS.map(opt => <option key={opt.label} value={opt.label}>{opt.label}</option>)}</select></div>
         <div className="form-group"><label>Price (₹)</label><input type="number" name="price" onChange={handleChange} required /></div>
         <div className="form-group"><label>Discount (%)</label><input type="number" name="discount" onChange={handleChange} placeholder="0" /></div>
+        <div className="form-group"><label>Shipping Fee (₹)</label><input type="number" name="shipping_fee" onChange={handleChange} value={formData.shipping_fee} /></div>
         <div className="form-group"><label>Color</label><input type="text" name="color" onChange={handleChange} placeholder="e.g. Blue" /></div>
         <div className="form-group"><label>Sizes (Comma separated)</label><input type="text" name="size" onChange={handleChange} placeholder="S, M, L, XL" /></div>
       </div>
@@ -552,6 +554,7 @@ function CouponTab() {
   };
 
   const toggleCoupon = async (id, status) => { try { await api.put(`/api/admin/coupons/${id}/toggle`, { status: status === 1 ? 0 : 1 }); fetchCoupons(); } catch { alert("Toggle failed!"); } };
+  const toggleCouponVisibility = async (id, visible) => { try { await api.put(`/api/admin/coupons/${id}/visibility`, { visible: visible === 1 ? 0 : 1 }); fetchCoupons(); } catch { alert("Visibility update failed!"); } };
   const deleteCoupon = async (id) => { if (!window.confirm("Are you sure you want to delete this coupon?")) return; try { await api.delete(`/api/admin/coupons/${id}`); fetchCoupons(); } catch { alert("Delete failed!"); } };
   const startEdit = (c) => { setForm({ code: c.code, value: c.discount_value, min: c.min_cart_value, desc: c.description || '' }); setEditId(c.id); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
@@ -586,7 +589,8 @@ function CouponTab() {
                   <td style={{ padding: '12px 16px' }}>
                     <div style={{ display: 'flex', gap: '8px' }}>
                       <button onClick={() => startEdit(c)} style={iconBtn}><Edit3 size={14} /></button>
-                      <button onClick={() => toggleCoupon(c.id, c.status)} style={{ ...iconBtn, color: c.status === 1 ? '#94969f' : '#03a685' }}>{c.status === 1 ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}</button>
+                      <button onClick={() => toggleCoupon(c.id, c.status)} title={c.status === 1 ? 'Deactivate coupon' : 'Activate coupon'} style={{ ...iconBtn, color: c.status === 1 ? '#94969f' : '#03a685' }}>{c.status === 1 ? <ToggleRight size={16} /> : <ToggleLeft size={16} />}</button>
+                      <button onClick={() => toggleCouponVisibility(c.id, c.visible)} title={c.visible === 1 ? 'Hide coupon from website' : 'Show coupon on website'} style={{ ...iconBtn, color: c.visible === 1 ? '#535766' : '#03a685' }}>{c.visible === 1 ? <Eye size={15} /> : <EyeOff size={15} />}</button>
                       <button onClick={() => deleteCoupon(c.id)} style={{ ...iconBtn, color: 'maroon' }}><Trash2 size={14} /></button>
                     </div>
                   </td>
@@ -635,9 +639,20 @@ function OrdersTab() {
       const res = await api.get(`/api/admin/orders/${orderId}/label`, { responseType: 'blob' });
       const blob = new Blob([res.data], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `delivery-slip-${orderId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
     } catch (err) {
-      Swal.fire('Error', 'Label could not be generated!', 'error');
+      const message = err.response?.data instanceof Blob
+        ? await err.response.data.text().then(body => {
+          try { return JSON.parse(body).message; } catch { return null; }
+        })
+        : err.response?.data?.message;
+      Swal.fire('Error', message || 'Label could not be generated!', 'error');
     }
   };
   const filtered = filter === 'All' ? orders : orders.filter(o => o.order_status === filter);
@@ -683,7 +698,7 @@ function OrdersTab() {
                   onClick={() => downloadLabel(order.order_id)}
                   style={{ padding: '8px 14px', borderRadius: '6px', border: '1.5px solid #282c3f', background: 'white', color: '#282c3f', fontWeight: '700', fontSize: '12px', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                 >
-                  <Package size={13} /> Print Label
+                  <Package size={13} /> Download 4×6 Slip
                 </button>
                 {updatingId === order.order_id && <span style={{ fontSize: '12px', color: '#94969f' }}>Updating...</span>}
               </div>
@@ -870,7 +885,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editForm, setEditForm] = useState({ id: '', title: '', sku: '', price: '', discount: '', submenu: '', search_keywords: '', sort_label: '', specifications: '' });
+  const [editForm, setEditForm] = useState({ id: '', title: '', sku: '', price: '', discount: '', shipping_fee: 0, submenu: '', search_keywords: '', sort_label: '', specifications: '' });
   const [editCurrentImageUrl, setEditCurrentImageUrl] = useState('');
   const [editExistingImageCount, setEditExistingImageCount] = useState(0);
   const [editImageFiles, setEditImageFiles] = useState([]);
@@ -991,6 +1006,7 @@ export default function AdminDashboard() {
       sku: product.sku || '',
       price: product.priceNum || product.price,
       discount: product.discount || 0,
+      shipping_fee: product.shipping_fee || product.shippingFee || 0,
       submenu: product.submenu || '',
       search_keywords: product.search_keywords || '',
       sort_label: product.sort_label || '',
@@ -1035,6 +1051,7 @@ export default function AdminDashboard() {
     formData.append('search_keywords', [editForm.search_keywords, editForm.submenu, editForm.sort_label, editStockLabel].filter(Boolean).join(', '));
     formData.append('sort_label', editForm.sort_label || '');
     formData.append('specifications', specsString);
+    formData.append('shipping_fee', Number(editForm.shipping_fee || 0));
     editImageFiles.forEach(f => formData.append('images', f));
 
     try {
@@ -1262,6 +1279,10 @@ export default function AdminDashboard() {
                 <div style={{ flex: 1 }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '5px' }}>Discount (%)</label>
                   <input type="number" value={editForm.discount} onChange={e => setEditForm({ ...editForm, discount: e.target.value })} style={inputStyle} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: '700', marginBottom: '5px' }}>Shipping Fee (₹)</label>
+                  <input type="number" value={editForm.shipping_fee || 0} onChange={e => setEditForm({ ...editForm, shipping_fee: e.target.value })} style={inputStyle} />
                 </div>
               </div>
 

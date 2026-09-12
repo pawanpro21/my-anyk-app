@@ -148,6 +148,7 @@ export default function WomensCollection({ addToCart, updateCartCount }) {
             product_id: dbItem.product_id || dbItem.id,
             name: dbItem.title,
             color: dbItem.color || 'White',
+            category: dbItem.category || '',
             priceNum: Number(dbItem.price) || 0,
             discount: Number(dbItem.discount) || 0,
             image: imgFull,
@@ -193,7 +194,9 @@ const mensOnly = fetchedProducts.filter(
       console.error('Cart check failed:', err.response?.data || err.message || err);
     }
 
-    const alreadyInCart = existingBackendCart.some(item => String(item.product_id) === productId);
+    const alreadyInCart = existingBackendCart.some(item =>
+      String(item.product_id) === productId && (item.size || 'M') === selectedSize
+    );
 
     if (alreadyInCart) {
       await api.put('/api/cart/update', payload);

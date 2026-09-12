@@ -69,18 +69,18 @@ const navMenus = [
     activeKey: "/mens",
     submenu: [
       { label: "Round Shape T-Shirt", path: "/mens?search=Round Shape" },
-      { label: "V-Shape T-Shirt",     path: "/coming-soon?search=V-Shape" },
-      { label: "Solid Collar Polo",   path: "/coming-soon?search=Collar Polo" },
+      { label: "V-Shape T-Shirt",     path: "/mens?search=V-Shape" },
+      { label: "Solid Collar Polo",   path: "/mens?search=Collar Polo" },
     ]
   },
   {
     label: "WOMEN'S WEAR",
-    path: "/womens?category=women",
-    activeKey: "women",
+    path: "/womens",
+    activeKey: "womens",
     submenu: [
-      { label: "Round Shape T-Shirt", path: "/coming-soon?category=women" },
-      { label: "V-Shape T-Shirt",     path: "/coming-soon?category=women" },
-      { label: "Solid Collar Polo",   path: "/coming-soon?category=women" },
+      { label: "Round Shape T-Shirt", path: "/womens?search=Round Shape" },
+      { label: "V-Shape T-Shirt",     path: "/womens?search=V-Shape"  },
+      { label: "Solid Collar Polo",   path: "/womens?search=Collar Polo" },
     ]
   },
   {
@@ -94,6 +94,10 @@ const navMenus = [
     ]
   },
 ];
+
+const getSearchBasePath = () => {
+  return location.pathname === '/womens' ? '/womens' : '/mens';
+};
   // 🟢 FETCH DYNAMIC BANNERS
   useEffect(() => {
   api.get(`/api/banners/active`)
@@ -344,31 +348,33 @@ const navMenus = [
     });
   };
 
-  const handleKeywordClick = (keyword) => {
+ const handleKeywordClick = (keyword) => {
 
-    setSearchInput(keyword);
-    setShowDropdown(false);
-    setIsSearchExpanded(false);
+  setSearchInput(keyword);
+  setShowDropdown(false);
+  setIsSearchExpanded(false);
 
-    navigate(`/mens?search=${encodeURIComponent(keyword)}`);
-  };
+  const base = getSearchBasePath();
+  navigate(`${base}?search=${encodeURIComponent(keyword)}`);
+};
 
   const handleSearch = (e) => {
 
-    if (e.key === 'Enter' || e.type === 'click') {
+  if (e.key === 'Enter' || e.type === 'click') {
 
-      const q = searchInput.trim();
+    const q = searchInput.trim();
 
-      setShowDropdown(false);
-      setIsSearchExpanded(false);
+    setShowDropdown(false);
+    setIsSearchExpanded(false);
 
-      navigate(
-        q
-          ? `/mens?search=${encodeURIComponent(q)}`
-          : '/mens'
-      );
-    }
-  };
+    const base = getSearchBasePath();
+    navigate(
+      q
+        ? `${base}?search=${encodeURIComponent(q)}`
+        : base
+    );
+  }
+};
 
   const handleLogout = async () => {
     try {
@@ -385,13 +391,14 @@ const navMenus = [
   };
 
   const submitMobileHeaderSearch = () => {
-    const q = searchInput.trim();
-    navigate(q ? `/mens?search=${encodeURIComponent(q)}` : '/mens');
-    setSearchInput('');
-    setSuggestions([]);
-    setKeywordSuggestions([]);
-    setShowDropdown(false);
-  };
+  const q = searchInput.trim();
+  const base = getSearchBasePath();
+  navigate(q ? `${base}?search=${encodeURIComponent(q)}` : base);
+  setSearchInput('');
+  setSuggestions([]);
+  setKeywordSuggestions([]);
+  setShowDropdown(false);
+};
 
   const handleMobileHeaderSearch = (e) => {
     if (e.key === 'Enter' || e.key === 'Go' || e.keyCode === 13) {
@@ -1286,19 +1293,20 @@ const navMenus = [
                   width: '100%',
                   color: '#282c3f'
                 }}
-                onKeyDown={(e) => {
+               onKeyDown={(e) => {
 
-                  if (e.key === 'Enter' && e.target.value.trim()) {
+  if (e.key === 'Enter' && e.target.value.trim()) {
 
-                    setIsMobileMenuOpen(false);
+    setIsMobileMenuOpen(false);
 
-                    navigate(
-                      `/mens?search=${encodeURIComponent(e.target.value.trim())}`
-                    );
+    const base = getSearchBasePath();
+    navigate(
+      `${base}?search=${encodeURIComponent(e.target.value.trim())}`
+    );
 
-                  }
+  }
 
-                }}
+}}
               />
 
             </div>
@@ -1325,7 +1333,7 @@ const navMenus = [
             <li>
 
               <Link
-                to="/coming-soon?category=women"
+                to="/womens"
                 style={{ textDecoration: 'none' }}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
